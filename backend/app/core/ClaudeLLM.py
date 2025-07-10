@@ -14,7 +14,7 @@ class ClaudeLLM(LLM):
             api_key=llm_api_key,
             base_url=llm_base_url
         )
-        self.model_name = "vertex_ai/claude3.7-sonnet"  # Change as needed
+        self.model_name = "vertex_ai/claude3.7-sonnet" 
         self.model = self.model_name
     def call(self, messages: List[Dict], **kwargs) -> str:
         # Claude via OpenAI proxy supports OpenAI format (assumed by CrewAI)
