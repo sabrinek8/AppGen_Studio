@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, SectionHeader, Button, Textarea } from '../UI';
+import { FileUpload } from '../UI/FileUpload';
 
 export const GeneratorSection = ({
   projectDescription,
@@ -7,7 +8,10 @@ export const GeneratorSection = ({
   projectFeatures,
   setProjectFeatures,
   isGenerating,
-  onGenerate
+  onGenerate,
+  selectedFiles,
+  onFileSelect,
+  onFileRemove
 }) => (
   <Card>
     <SectionHeader
@@ -42,6 +46,25 @@ export const GeneratorSection = ({
 • Intégration API REST`}
         rows={6}
       />
+
+      <FileUpload
+        onFileSelect={onFileSelect}
+        onFileRemove={onFileRemove}
+        selectedFiles={selectedFiles}
+      />
+
+      {selectedFiles.length > 0 && (
+        <div style={{
+          padding: '12px 16px',
+          backgroundColor: '#e8f5e8',
+          borderRadius: '8px',
+          border: '1px solid #c3e6c3',
+          fontSize: '14px',
+          color: '#2d5a2d'
+        }}>
+          <strong>💡 Astuce :</strong> Les fichiers uploadés seront analysés par l'IA pour mieux comprendre votre style de code et vos préférences architecturales.
+        </div>
+      )}
     </div>
 
     <div style={{ display: 'flex', justifyContent: 'center' }}>

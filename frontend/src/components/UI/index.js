@@ -6,5 +6,6 @@ export * from './Layout';
 export * from './SectionHeader';
 export * from './Textarea';
 export * from './ManagementCard';
+export * from './FileUpload';
 
 

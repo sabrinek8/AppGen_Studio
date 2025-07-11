@@ -1,0 +1,26 @@
+Cahier des Charges – Application "Ma Bibliothèque Personnelle"
+1. Description Générale
+L’application « Ma Bibliothèque Personnelle » permet aux utilisateurs de gérer leur collection de livres personnels. Chaque utilisateur peut ajouter, consulter, modifier ou supprimer les livres qu’il possède.
+
+2. Fonctionnalités Principales
+Page d’accueil
+
+Affiche la liste des livres enregistrés avec leur titre, auteur et couverture.
+
+Possibilité de filtrer par genre ou de rechercher un livre par mot-clé.
+
+Page d’ajout d’un livre
+
+Formulaire contenant les champs suivants : titre, auteur, date de lecture, couverture (image), résumé, genre (liste déroulante).
+
+Page de détails d’un livre
+
+Affiche les informations complètes du livre sélectionné.
+
+Page d’édition
+
+Permet de modifier les informations d’un livre existant.
+
+Page de profil utilisateur
+
+Informations de base sur l’utilisateur et nombre total de livres lus.

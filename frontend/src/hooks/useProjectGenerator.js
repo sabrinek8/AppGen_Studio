@@ -7,20 +7,22 @@ export const useProjectGenerator = () => {
 
   const API_BASE_URL = "http://localhost:8000";
 
-  const generateProject = async () => {
+  const generateProject = async (filesContext = '') => {
     if (!projectDescription.trim()) {
       throw new Error("Veuillez entrer une description du projet.");
     }
 
     setIsGenerating(true);
     try {
+      const enrichedDescription = projectDescription + filesContext;
+      
       const response = await fetch(`${API_BASE_URL}/generate-project`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          description: projectDescription,
+          description: enrichedDescription,
           features: projectFeatures
         }),
       });

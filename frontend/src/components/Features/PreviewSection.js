@@ -35,7 +35,8 @@ export const PreviewSection = ({ currentProject, selectedFile }) => (
           dependencies: {
             react: "^18.0.0",
             "react-dom": "^18.0.0",
-            "react-router-dom": "^6.22.0"
+            "react-router-dom": "^6.22.0",
+            "date-fns":"^4.1.0"
           }
         }}
       />

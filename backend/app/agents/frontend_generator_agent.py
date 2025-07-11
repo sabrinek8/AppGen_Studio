@@ -22,8 +22,8 @@ Fonctionnalité de l'application : {description}
 ➤ Chaque composant ou page doit être dans un fichier séparé avec une exportation sous la forme :
 `export default function NomDuComposant() {{ ... }}`
 ➤Ne génère **aucun fichier index.js ou index.html**.
-➤Les fichiers App.js et App.css sont directement au dessous de root
-➤Lorsque tu génères des objets ou des composants contenant des images (ex. image, photo, picture), utilise toujours une URL directe et fonctionnelle , Ne mets jamais de chemin local comme ./assets/photo.jpg
+➤Génère les fichiers App.js et App.css sont directement au dessous de root ne sont pas au dessous src/ !!!
+➤Lorsque tu génères des objets ou des composants contenant des images (ex. image, photo, picture), essayer de définir des exemples dans js avec des liens valides
 
 ➤ Structure la réponse sous forme d'un objet JSON valide :
 - Chaque **clé** représente le chemin du fichier

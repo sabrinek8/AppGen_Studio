@@ -1,5 +1,6 @@
 import React from 'react';
 import { useProject, useProjectGenerator, useNavigation, useFileHandler } from '../../hooks';
+import { useFileUpload } from '../../hooks/useFileUpload';
 import { GeneratorSection } from './GeneratorSection';
 import { PreviewSection } from './PreviewSection';
 import { ManagementSection } from './ManagementSection';
@@ -25,10 +26,20 @@ export const ProjectContainer = () => {
 
   const { activeSection, navigateTo } = useNavigation();
   const { importFromFile } = useFileHandler();
+  
+  // Nouveau hook pour gérer l'upload de fichiers
+  const {
+    selectedFiles,
+    addFile,
+    removeFile,
+    clearAllFiles,
+    getFilesContext
+  } = useFileUpload();
 
   const handleGenerate = async () => {
     try {
-      const projectData = await generateProject();
+      const filesContext = getFilesContext();
+      const projectData = await generateProject(filesContext);
       importProject(projectData);
       navigateTo('preview');
       alert("Projet généré avec succès !");
@@ -52,6 +63,7 @@ export const ProjectContainer = () => {
     const success = resetProject();
     if (success) {
       resetForm();
+      clearAllFiles(); // Nettoyer aussi les fichiers uploadés
       navigateTo('generator');
     }
   };
@@ -67,6 +79,9 @@ export const ProjectContainer = () => {
             setProjectFeatures={setProjectFeatures}
             isGenerating={isGenerating}
             onGenerate={handleGenerate}
+            selectedFiles={selectedFiles}
+            onFileSelect={addFile}
+            onFileRemove={removeFile}
           />
         );
       case 'preview':
