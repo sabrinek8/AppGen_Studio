@@ -1,0 +1,36 @@
+Cahier des Charges – Application "Mon Planificateur Quotidien"
+1. Description Générale
+L'application « Mon Planificateur Quotidien » permet aux utilisateurs de créer, organiser et suivre leurs tâches journalières. Elle vise à améliorer la productivité personnelle avec une interface simple et intuitive.
+
+2. Fonctionnalités Principales
+Page d’accueil
+
+Affiche la liste des tâches du jour avec leur état (à faire, en cours, terminé).
+
+Barre de recherche pour filtrer les tâches.
+
+Ajout d’une tâche
+
+Formulaire avec les champs : titre, description, date d’échéance, priorité (basse, moyenne, haute), statut.
+
+Modification / Suppression d’une tâche
+
+Accès à chaque tâche pour la modifier ou la supprimer.
+
+Vue calendrier
+
+Visualisation des tâches sur un calendrier (vue mensuelle/semaine).
+
+Statistiques
+
+Affichage du nombre de tâches accomplies, en retard, ou en cours.
+
+3. Interfaces Utilisateur (UI)
+Interface en colonnes : À faire | En cours | Terminé (type Kanban)
+
+Couleurs différentes selon la priorité
+
+Bouton flottant « + » pour ajouter rapidement une nouvelle tâche
+
+Menu latéral avec navigation (Accueil, Calendrier, Statistiques, Paramètres)
+

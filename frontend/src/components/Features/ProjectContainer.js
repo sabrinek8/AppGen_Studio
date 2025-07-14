@@ -42,7 +42,6 @@ export const ProjectContainer = () => {
       const projectData = await generateProject(filesContext);
       importProject(projectData);
       navigateTo('preview');
-      alert("Projet généré avec succès !");
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
       alert(`Erreur lors de la génération : ${error.message}`);

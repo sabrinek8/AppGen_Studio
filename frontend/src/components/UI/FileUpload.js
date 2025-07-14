@@ -34,18 +34,23 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
       'text/html',
       'text/markdown',
       'application/xml',
-      'text/xml'
+      'text/xml',
+      'application/pdf'
     ];
     
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSizeForPdf = 10 * 1024 * 1024; // 10MB
+    const maxSizeForOthers = 5 * 1024 * 1024; // 5MB
     
-    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|js|jsx|ts|tsx|css|html|json|md|xml)$/i)) {
-      alert('Format de fichier non supporté. Formats acceptés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml');
+    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|js|jsx|ts|tsx|css|html|json|md|xml|pdf)$/i)) {
+      alert('Format de fichier non supporté. Formats acceptés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml, .pdf');
       return false;
     }
     
-    if (file.size > maxSize) {
-      alert('Fichier trop volumineux. Taille maximale : 5MB');
+    const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const currentMaxSize = isPDF ? maxSizeForPdf : maxSizeForOthers;
+    
+    if (file.size > currentMaxSize) {
+      alert(`Fichier trop volumineux. Taille maximale : ${isPDF ? '10MB' : '5MB'}`);
       return false;
     }
     
@@ -72,7 +77,8 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
       json: '📄',
       md: '📝',
       txt: '📄',
-      xml: '📄'
+      xml: '📄',
+      pdf: '📕',
     };
     return iconMap[ext] || '📄';
   };
@@ -107,7 +113,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
         <input
           type="file"
           multiple
-          accept=".txt,.js,.jsx,.ts,.tsx,.css,.html,.json,.md,.xml"
+          accept=".txt,.js,.jsx,.ts,.tsx,.css,.html,.json,.md,.xml,.pdf"
           onChange={handleFileInput}
           style={{ display: 'none' }}
           id="file-upload"
@@ -132,7 +138,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
             color: '#7f8c8d',
             fontSize: '14px'
           }}>
-            Formats supportés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml (max 5MB)
+            Formats supportés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml , .pdf (max 10MB)
           </p>
         </label>
       </div>

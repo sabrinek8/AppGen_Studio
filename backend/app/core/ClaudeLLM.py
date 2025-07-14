@@ -2,6 +2,7 @@ import openai
 from crewai.llm import LLM
 from typing import List, Dict
 import os
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,6 +26,16 @@ class ClaudeLLM(LLM):
             top_p=kwargs.get("top_p", 1.0),
             max_tokens=kwargs.get("max_tokens", 64000)
         )
+        if hasattr(response, 'usage'):
+            usage = response.usage
+            with open("token_usage.log", "a", encoding="utf-8") as f:
+                f.write(
+                    f"[{self.model_name}] Prompt: {usage.prompt_tokens} tokens, "
+                    f"Completion: {usage.completion_tokens} tokens, Total: {usage.total_tokens} tokens\n"
+                )
+        else:
+             with open("token_usage.log", "a", encoding="utf-8") as f:
+                    f.write("Token usage information not available in response.\n")
         return response.choices[0].message.content
 
     @property

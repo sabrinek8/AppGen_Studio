@@ -36,7 +36,12 @@ export const PreviewSection = ({ currentProject, selectedFile }) => (
             react: "^18.0.0",
             "react-dom": "^18.0.0",
             "react-router-dom": "^6.22.0",
-            "date-fns":"^4.1.0"
+            "date-fns":"^4.1.0",
+            "react-icons":"^5.5.0",
+            "react-chartjs-2":"^5.3.0",
+            "chart.js": "^4.4.0" ,
+            "react-big-calendar": "^1.11.0" 
+            
           }
         }}
       />

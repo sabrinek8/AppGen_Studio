@@ -7,7 +7,7 @@ frontend_generator_agent = Agent(
     role="React Frontend Architect",
     goal="Créer une application ReactJS moderne avec des composants réutilisables",
     backstory="Expert ReactJS, spécialisé dans la génération automatisée d'UI modernes.",
-    verbose=True,
+    verbose=False,
     allow_delegation=False,
     llm=llm_claude
 )
@@ -23,7 +23,10 @@ Fonctionnalité de l'application : {description}
 `export default function NomDuComposant() {{ ... }}`
 ➤Ne génère **aucun fichier index.js ou index.html**.
 ➤Génère les fichiers App.js et App.css sont directement au dessous de root ne sont pas au dessous src/ !!!
-➤Lorsque tu génères des objets ou des composants contenant des images (ex. image, photo, picture), essayer de définir des exemples dans js avec des liens valides
+➤Lorsque tu génères des objets ou des composants contenant des images (ex. image, photo, picture), essayer de définir des exemples dans js avec des liens valides.
+➤Ajoute \' au lieu de ' dans les textes contenant des apostrophes, si la chaîne est entourée de guillemets simples.
+
+
 
 ➤ Structure la réponse sous forme d'un objet JSON valide :
 - Chaque **clé** représente le chemin du fichier

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router
+from app.api.pdf_routes import router as pdf_router
 from app.config.settings import configure_logging
 
 # Config logging
@@ -19,3 +20,4 @@ app.add_middleware(
 
 # Routes
 app.include_router(router)
+app.include_router(pdf_router, prefix="/api/pdf", tags=["PDF"])
