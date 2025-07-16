@@ -40,7 +40,8 @@ export const PreviewSection = ({ currentProject, selectedFile }) => (
             "react-icons":"^5.5.0",
             "react-chartjs-2":"^5.3.0",
             "chart.js": "^4.4.0" ,
-            "react-big-calendar": "^1.11.0" 
+            "react-big-calendar": "^1.11.0" ,
+            "recharts": "^2.8.0" 
             
           }
         }}
