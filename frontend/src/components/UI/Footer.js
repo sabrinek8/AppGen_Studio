@@ -1,46 +1,52 @@
 import React from 'react';
 
 export const Footer = () => (
-  <footer style={{
-    background: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
-    borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-    padding: '30px 0',
-    marginTop: '50px'
-  }}>
-    <div style={{
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '0 20px',
-      textAlign: 'center'
-    }}>
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
-        padding: '20px',
-        marginBottom: '20px'
-      }}>
-        <h4 style={{
-          margin: '0 0 12px 0',
-          color: 'white',
-          fontSize: '18px',
-          fontWeight: '600'
-        }}>
-          📝 Guide d'utilisation
-        </h4>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: '16px',
-          fontSize: '14px',
-          color: 'rgb(255, 255, 255)'
-        }}>
-          <div>🤖 Utilisez l'IA pour générer des projets personnalisés</div>
-          <div>👁️ Visualisez et éditez votre code en temps réel</div>
-          <div>⚙️ Gérez vos projets avec import/export</div>
-        </div>
-      </div>
+  <footer className="footer navbar" data-bs-theme="dark">
+    <div className="container-xxl footer-social">
+      <h3 className="footer-heading me-md-3">Follow us</h3>
+      <ul className="navbar-nav gap-2 flex-row align-self-start">
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-twitter">
+            <span className="visually-hidden">Twitter</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-facebook">
+            <span className="visually-hidden">Facebook</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-instagram">
+            <span className="visually-hidden">Instagram</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-whatsapp">
+            <span className="visually-hidden">WhatsApp</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-linkedin">
+            <span className="visually-hidden">LinkedIn</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" className="btn btn-icon btn-social btn-youtube">
+            <span className="visually-hidden">YouTube</span>
+          </a>
+        </li>
+      </ul>
     </div>
+    <div className="container-xxl footer-terms">
+    <ul className="navbar-nav gap-md-3">
+      <li className="fw-bold">© Orange 2025</li>
+      <li><a className="nav-link" href="#">Terms and conditions</a></li>
+      <li><a className="nav-link" href="#">Privacy</a></li>
+      <li><a className="nav-link" href="#">Accessibility statement</a></li>
+      <li><a className="nav-link" href="#">Cookie policy</a></li>
+    </ul>
+  </div>
   </footer>
 );
+
 
