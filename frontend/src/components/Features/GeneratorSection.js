@@ -26,28 +26,30 @@ export const GeneratorSection = ({
       gap: '24px',
       marginBottom: '30px'
     }}>
-      <Textarea
-        label="💡 Description du projet"
-        icon="💡"
-        value={projectDescription}
-        onChange={(e) => setProjectDescription(e.target.value)}
-        placeholder="Décrivez votre application React idéale... Ex: Une application de gestion de tâches avec authentification, création de projets, et tableau de bord analytique."
-        rows={5}
-      />
+  <Textarea
+  id="projectDescription"
+  label="Description du projet"
+  icon="💡"
+  value={projectDescription}
+  onChange={(e) => setProjectDescription(e.target.value)}
+  placeholder="Décrivez votre application React idéale... Ex: Une application de gestion de tâches avec authentification, création de projets, et tableau de bord analytique."
+  rows={5}
+  required
+/>
 
-      <Textarea
-        label="⚡ Fonctionnalités spécifiques (optionnel)"
-        icon="⚡"
-        value={projectFeatures}
-        onChange={(e) => setProjectFeatures(e.target.value)}
-        placeholder={`Listez les fonctionnalités spécifiques souhaitées...
+<Textarea
+  id="projectFeatures"
+  label="Fonctionnalités spécifiques (optionnel)"
+  icon="⚡"
+  value={projectFeatures}
+  onChange={(e) => setProjectFeatures(e.target.value)}
+  placeholder={`Listez les fonctionnalités spécifiques souhaitées...
 • Interface utilisateur moderne avec dark mode
 • Gestion d'état avec contexte React
 • Animations fluides et responsive design
 • Intégration API REST`}
-        rows={6}
-      />
-
+  rows={6}
+/>
       <FileUpload
         onFileSelect={onFileSelect}
         onFileRemove={onFileRemove}

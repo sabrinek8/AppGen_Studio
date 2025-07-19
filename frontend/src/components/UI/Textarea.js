@@ -1,33 +1,16 @@
 import React from 'react';
 
-export const Textarea = ({ label, icon, ...props }) => (
-  <div>
+export const Textarea = ({ label, icon, id, ...props }) => (
+  <div className="mb-3">
     {label && (
-      <label style={{
-        display: 'block',
-        marginBottom: '8px',
-        fontWeight: '600',
-        color: '#2c3e50',
-        fontSize: '16px'
-      }}>
+      <label htmlFor={id} className="form-label">
         {icon && <span style={{ marginRight: '8px' }}>{icon}</span>}
         {label}
       </label>
     )}
     <textarea
-      style={{
-        width: '100%',
-        padding: '16px',
-        border: '2px solid #e9ecef',
-        borderRadius: '12px',
-        fontSize: '16px',
-        resize: 'vertical',
-        fontFamily: 'inherit',
-        transition: 'border-color 0.3s ease',
-        outline: 'none'
-      }}
-      onFocus={(e) => e.target.style.borderColor = '#000000'}
-      onBlur={(e) => e.target.style.borderColor = '#e9ecef'}
+      className="form-control"
+      id={id}
       {...props}
     />
   </div>

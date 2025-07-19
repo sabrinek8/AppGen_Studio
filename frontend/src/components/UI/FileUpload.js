@@ -84,16 +84,10 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
   };
 
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <label style={{
-        display: 'block',
-        marginBottom: '8px',
-        fontWeight: '600',
-        color: '#2c3e50',
-        fontSize: '16px'
-      }}>
-        📎 Fichiers de référence (optionnel)
-      </label>
+ <div className="mb-3">
+  <label htmlFor="referenceFiles" className="form-label">
+    📎 Fichiers de référence (optionnel)
+  </label>
       
       <div
         onDrop={handleDrop}
