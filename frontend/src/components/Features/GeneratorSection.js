@@ -68,23 +68,24 @@ export const GeneratorSection = ({
     </div>
 
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <Button
+<button 
+        type="button" 
+        className="btn btn-outline-secondary btn-lg"
         onClick={onGenerate}
         disabled={isGenerating || !projectDescription.trim()}
-        size="large"
       >
         {isGenerating ? (
           <>
-            <span>🔄</span>
+            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
             Génération...
           </>
         ) : (
           <>
-            <span>✨</span>
+            <span style={{ marginRight: '8px' }}>✨</span>
             Générer le projet
           </>
         )}
-      </Button>
+      </button>
     </div>
   </Card>
 );
