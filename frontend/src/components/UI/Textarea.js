@@ -26,7 +26,7 @@ export const Textarea = ({ label, icon, ...props }) => (
         transition: 'border-color 0.3s ease',
         outline: 'none'
       }}
-      onFocus={(e) => e.target.style.borderColor = '#667eea'}
+      onFocus={(e) => e.target.style.borderColor = '#000000'}
       onBlur={(e) => e.target.style.borderColor = '#e9ecef'}
       {...props}
     />

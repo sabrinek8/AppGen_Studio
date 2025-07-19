@@ -2,11 +2,12 @@ import React from 'react';
 import { Sandpack } from '@codesandbox/sandpack-react';
 import { githubLight } from "@codesandbox/sandpack-themes";
 import { Card, SectionHeader } from '../UI';
+import { Columns2 } from 'lucide-react';
 
 export const PreviewSection = ({ currentProject, selectedFile }) => (
   <Card style={{ padding: '30px' }}>
     <SectionHeader
-      icon="👁️"
+      icon={<Columns2 size={24} />}
       title="Aperçu du projet"
       subtitle="Éditez et testez votre code en temps réel"
     />

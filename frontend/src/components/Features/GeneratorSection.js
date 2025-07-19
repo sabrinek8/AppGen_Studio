@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, SectionHeader, Button, Textarea } from '../UI';
 import { FileUpload } from '../UI/FileUpload';
+import { Brain } from 'lucide-react';
 
 export const GeneratorSection = ({
   projectDescription,
@@ -15,7 +16,7 @@ export const GeneratorSection = ({
 }) => (
   <Card>
     <SectionHeader
-      icon="🤖"
+      icon={<Brain size={27} />}
       title="Générateur IA"
       subtitle="Créez votre projet React personnalisé avec l'intelligence artificielle"
     />

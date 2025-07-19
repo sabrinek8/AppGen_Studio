@@ -3,7 +3,7 @@ import React from 'react';
 export const Footer = () => (
   <footer className="footer navbar" data-bs-theme="dark">
     <div className="container-xxl footer-social">
-      <h3 className="footer-heading me-md-3">Follow us</h3>
+      <h3 className="footer-heading me-md-3">Suivez-nous</h3>
       <ul className="navbar-nav gap-2 flex-row align-self-start">
         <li>
           <a href="#" className="btn btn-icon btn-social btn-twitter">
@@ -40,10 +40,10 @@ export const Footer = () => (
     <div className="container-xxl footer-terms">
     <ul className="navbar-nav gap-md-3">
       <li className="fw-bold">© Orange 2025</li>
-      <li><a className="nav-link" href="#">Terms and conditions</a></li>
-      <li><a className="nav-link" href="#">Privacy</a></li>
-      <li><a className="nav-link" href="#">Accessibility statement</a></li>
-      <li><a className="nav-link" href="#">Cookie policy</a></li>
+      <li><a className="nav-link" href="#">Conditions générales</a></li>
+      <li><a className="nav-link" href="#">Confidentialité</a></li>
+      <li><a className="nav-link" href="#">Déclaration d'accessibilité</a></li>
+      <li><a className="nav-link" href="#">Politique de cookies</a></li>
     </ul>
   </div>
   </footer>

@@ -7,16 +7,17 @@ export const SectionHeader = ({ icon, title, subtitle }) => (
     marginBottom: '30px'
   }}>
     <div style={{
-      width: '60px',
-      height: '60px',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: '16px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginRight: '20px',
-      fontSize: '24px'
-    }}>
+  width: '60px',
+  height: '60px',
+  background: 'white',
+  border: '2px solid black',
+  borderRadius: '0px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: '20px',
+  fontSize: '24px'
+}}>
       {icon}
     </div>
     <div>
