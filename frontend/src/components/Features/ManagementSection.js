@@ -1,5 +1,10 @@
 import React from 'react';
 import { ManagementCard } from '../UI';
+import { FolderOpen } from 'lucide-react';
+import { Save } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
+
+
 
 export const ManagementSection = ({
   onImport,
@@ -15,12 +20,12 @@ export const ManagementSection = ({
 
   return (
     <div style={{
-      display: 'grid',
-      gap: '24px',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+     display: 'grid',
+    gap: '24px',
+    gridTemplateColumns: '1fr'
     }}>
       <ManagementCard
-        icon="📁"
+        icon= <FolderOpen />
         title="Importer un projet"
         subtitle="Chargez un projet existant depuis un fichier JSON"
         variant="info"
@@ -31,7 +36,7 @@ export const ManagementSection = ({
       />
 
       <ManagementCard
-        icon="💾"
+        icon=<Save />
         title="Exporter le projet"
         subtitle="Sauvegardez votre projet au format JSON"
         variant="success"
@@ -40,7 +45,7 @@ export const ManagementSection = ({
       />
 
       <ManagementCard
-        icon="🔄"
+        icon=<RotateCcw />
         title="Réinitialiser"
         subtitle="Revenir au projet par défaut"
         variant="danger"

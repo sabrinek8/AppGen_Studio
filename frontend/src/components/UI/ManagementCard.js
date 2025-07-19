@@ -1,56 +1,65 @@
 import React from 'react';
 
 export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, variant = 'primary' }) => {
-  const getIconBackground = () => {
+  const getButtonClass = () => {
     const variants = {
-      primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      info: 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)',
-      success: 'linear-gradient(135deg, #27ae60 0%, #2ecc71 100%)',
-      danger: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)'
+      primary: 'btn btn-primary',
+      secondary: 'btn btn-secondary',
+      info: 'btn btn-info',
+      success: 'btn btn-success',
+      danger: 'btn btn-danger'
     };
-    return variants[variant] || variants.primary;
+    return variants[variant] || variants.secondary;
   };
 
   return (
     <div style={{
       background: 'rgba(255, 255, 255, 0.95)',
       borderRadius: '16px',
-      padding: '30px',
+      padding: '20px',
+      width: '400px',
+      height: '140px',
+      margin: '0 auto',
       boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
       backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.2)'
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
     }}>
       <div style={{
         display: 'flex',
-        alignItems: 'center',
-        marginBottom: '20px'
+        alignItems: 'center'
       }}>
         <div style={{
-          width: '48px',
-          height: '48px',
-          background: getIconBackground(),
-          borderRadius: '12px',
+          width: '60px',
+          height: '60px',
+          background: 'white',
+          border: '2px solid black',
+          borderRadius: '0px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          marginRight: '15px',
-          fontSize: '20px'
+          marginRight: '20px',
+          fontSize: '24px'
         }}>
           {icon}
         </div>
-        <div>
+        <div style={{ flex: 1 }}>
           <h3 style={{
             margin: 0,
-            fontSize: '18px',
+            fontSize: '16px',
             fontWeight: '600',
-            color: '#2c3e50'
+            color: '#2c3e50',
+            lineHeight: '1.2'
           }}>
             {title}
           </h3>
           <p style={{
             margin: '4px 0 0 0',
             color: '#7f8c8d',
-            fontSize: '14px'
+            fontSize: '13px',
+            lineHeight: '1.3'
           }}>
             {subtitle}
           </p>
@@ -59,18 +68,12 @@ export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, var
       
       {action && (
         <button
+          type="button"
+          className={getButtonClass()}
           onClick={action}
           style={{
             width: '100%',
-            padding: '12px 0',
-            background: getIconBackground(),
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: '500',
-            transition: 'all 0.3s ease'
+            marginTop: '12px'
           }}
         >
           {actionLabel}
