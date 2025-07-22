@@ -1,7 +1,7 @@
 import json
 import logging
 from app.models.schemas import ProjectRequest, ProjectResponse
-from app.agents.frontend_generator_agent import frontend_generator_agent, create_react_task
+from app.agents.frontend_generator_agent import frontend_generator_agent,create_react_native_web_task
 from crewai import Crew
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ def extract_json_from_output(output_str: str):
 async def generate_react_project(request: ProjectRequest) -> ProjectResponse:
     try:
         logger.info(f"Génération d'un projet React pour : {request.description}")
-        task = create_react_task(request.description, request.features)
+        task = create_react_native_web_task(request.description, request.features)
         crew = Crew(agents=[frontend_generator_agent], tasks=[task], verbose=True)
         result = crew.kickoff()
         result_str = str(result.output).strip() if hasattr(result, "output") else str(result).strip()

@@ -34,17 +34,14 @@ export const PreviewSection = ({ currentProject, selectedFile }) => (
         }}
         customSetup={{
           dependencies: {
-            react: "^18.0.0",
-            "react-dom": "^18.0.0",
-            "react-router-dom": "^6.22.0",
-            "date-fns":"^4.1.0",
-            "react-icons":"^5.5.0",
-            "react-chartjs-2":"^5.3.0",
-            "chart.js": "^4.4.0" ,
-            "react-big-calendar": "^1.11.0" ,
-            "recharts": "^2.8.0" 
-            
-          }
+            "react-native-web": "0.18.12",
+             "@react-navigation/native": "^6.1.6",
+            "@react-navigation/stack": "^6.3.20",
+            "react-native-screens": "^3.27.0",
+            "react-native-safe-area-context": "^4.7.4",
+            "react-native-gesture-handler": "^2.13.4",
+            "@expo/vector-icons": "14.1.0"
+                      }
         }}
       />
     </div>
