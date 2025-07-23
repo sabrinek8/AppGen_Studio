@@ -23,6 +23,7 @@ Fonctionnalité de l'application : {description}
 
 RÈGLES CRITIQUES REACT NATIVE WEB :
 ➤ IMPORTS depuis react-native-web : `import {{ View, Text, TouchableOpacity, StyleSheet }} from 'react-native-web'`
+et React et useState depuis react
 ➤ Composants react-native-web :
   - <div> → <View>
   - <span>, <p>, <h1-h6> → <Text>
@@ -34,6 +35,7 @@ RÈGLES CRITIQUES REACT NATIVE WEB :
 ➤ URIs d'images valides avec Image component
 ➤ Échapper les apostrophes : \' dans les strings
 ➤ Ne génère pas index.html !
+➤ Utilisez une toggle sidebar au lieu du menu header, sans importer de dépendances externes.
 CONTRAINTES PACKAGES EXTERNES :
 ➤ INTERDIT : N'utilise ou n'importe AUCUN package externe React Native (react-navigation, @react-native-community, react-native-vector-icons, etc.)
 ➤ OBLIGATOIRE : Si une fonctionnalité nécessite un package externe, code-la manuellement :
@@ -41,9 +43,7 @@ CONTRAINTES PACKAGES EXTERNES :
   - Icônes : Crée des composants SVG ou utilise des caractères Unicode/émojis
   - Animations : Utilise les Animated API de React Native ou CSS transitions
   - Composants UI : Code tous les composants personnalisés (modals, sliders, etc.)
-  - Stockage : Utilise localStorage/sessionStorage directement
-  - HTTP : Utilise fetch() natif
-➤ CRÉATIVITÉ : Développe des solutions créatives et natives pour remplacer les packages
+➤ CRÉATIVITÉ : Développe des solutions créatives responsives et natives pour remplacer les packages
 Format JSON uniquement : {{ "chemin/fichier.js": "code complet" }} """
     
     return Task(
