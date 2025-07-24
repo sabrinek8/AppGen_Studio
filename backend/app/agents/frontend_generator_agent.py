@@ -25,8 +25,7 @@ Fonctionnalité de l'application : {description}
 ➤Génère les fichiers App.js et App.css sont directement au dessous de root ne sont pas au dessous src/ !!!
 ➤Lorsque tu génères des objets ou des composants contenant des images (ex. image, photo, picture), essayer de définir des exemples dans js avec des liens valides.
 ➤Ajoute \' au lieu de ' dans les textes contenant des apostrophes, si la chaîne est entourée de guillemets simples.
-
-
+➤ L'application doit etre responsive
 
 ➤ Structure la réponse sous forme d'un objet JSON valide :
 - Chaque **clé** représente le chemin du fichier
