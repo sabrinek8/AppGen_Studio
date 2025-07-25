@@ -1,21 +1,27 @@
 import React from 'react';
 import { ManagementCard } from '../UI';
-import { FolderOpen } from 'lucide-react';
-import { Save } from 'lucide-react';
-import { RotateCcw } from 'lucide-react';
-
-
+import { FolderOpen, Save, RotateCcw, Archive } from 'lucide-react';
 
 export const ManagementSection = ({
   onImport,
   onExport,
-  onReset
+  onExportZip,
+  onReset,
+  currentProject
 }) => {
   const handleImportFile = (event) => {
     const file = event.target.files[0];
     if (file) {
       onImport(file);
     }
+  };
+
+  const handleExportZip = () => {
+    if (!currentProject || Object.keys(currentProject).length === 0) {
+      alert('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
+      return;
+    }
+    onExportZip(currentProject);
   };
 
   return (
@@ -25,7 +31,7 @@ export const ManagementSection = ({
     gridTemplateColumns: '1fr'
     }}>
       <ManagementCard
-        icon= <FolderOpen />
+        icon={<FolderOpen />}
         title="Importer un projet"
         subtitle="Chargez un projet existant depuis un fichier JSON"
         variant="info"
@@ -36,8 +42,8 @@ export const ManagementSection = ({
       />
 
       <ManagementCard
-        icon=<Save />
-        title="Exporter le projet"
+        icon={<Save />}
+        title="Exporter le projet (JSON)"
         subtitle="Sauvegardez votre projet au format JSON"
         variant="success"
         action={onExport}
@@ -45,7 +51,16 @@ export const ManagementSection = ({
       />
 
       <ManagementCard
-        icon=<RotateCcw />
+        icon={<Archive />}
+        title="Exporter le projet (ZIP)"
+        subtitle="Téléchargez votre projet avec la structure de dossiers"
+        variant="primary"
+        action={handleExportZip}
+        actionLabel="Télécharger ZIP"
+      />
+
+      <ManagementCard
+        icon={<RotateCcw />}
         title="Réinitialiser"
         subtitle="Revenir au projet par défaut"
         variant="danger"

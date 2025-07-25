@@ -1,6 +1,7 @@
 import React from 'react';
 import { useProject, useProjectGenerator, useNavigation, useFileHandler } from '../../hooks';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import { exportProjectAsZip, exportProjectAsZipSimple } from '../../utils/zipExport';
 import { GeneratorSection } from './GeneratorSection';
 import { PreviewSection } from './PreviewSection';
 import { ManagementSection } from './ManagementSection';
@@ -27,7 +28,7 @@ export const ProjectContainer = () => {
   const { activeSection, navigateTo } = useNavigation();
   const { importFromFile } = useFileHandler();
   
-  // Nouveau hook pour gérer l'upload de fichiers
+  // Hook pour gérer l'upload de fichiers
   const {
     selectedFiles,
     addFile,
@@ -58,11 +59,41 @@ export const ProjectContainer = () => {
     }
   };
 
+  const handleExportZip = async (projectData) => {
+    try {
+      if (!projectData || Object.keys(projectData).length === 0) {
+        alert('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
+        return;
+      }
+      
+      console.log('Données du projet à exporter:', projectData);
+      console.log('Nombre de fichiers:', Object.keys(projectData).length);
+      
+      // Generate a project name based on the current date
+      const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-T]/g, '');
+      const projectName = `react-project-${timestamp}`;
+      
+      // Use the updated export method
+      try {
+        await exportProjectAsZip(projectData, projectName);
+        alert('Files téléchargés avec succès ! 🎉');
+      } catch (zipError) {
+        console.log('Erreur ZIP, utilisation du fallback:', zipError.message);
+        exportProjectAsZipSimple(projectData, projectName);
+        alert('Tous les fichiers ont été téléchargés individuellement.');
+      }
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'export:', error);
+      alert('Erreur lors de l\'export du projet: ' + error.message);
+    }
+  };
+
   const handleReset = () => {
     const success = resetProject();
     if (success) {
       resetForm();
-      clearAllFiles(); // Nettoyer aussi les fichiers uploadés
+      clearAllFiles();
       navigateTo('generator');
     }
   };
@@ -95,7 +126,9 @@ export const ProjectContainer = () => {
           <ManagementSection
             onImport={handleImport}
             onExport={exportProject}
+            onExportZip={handleExportZip}
             onReset={handleReset}
+            currentProject={currentProject}
           />
         );
       default:
