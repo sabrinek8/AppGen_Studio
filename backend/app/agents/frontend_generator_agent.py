@@ -35,6 +35,14 @@ et React et useState depuis react
 ➤ URIs d'images valides avec Image component
 ➤ Échapper les apostrophes : \' dans les strings
 ➤ Ne génère pas index.html !
+➤ Utilise ce index.js :
+import React from 'react';
+import {{ createRoot }} from 'react-dom/client';
+import App from './App';
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<App />);'
 ➤ Utilisez une toggle sidebar au lieu du menu header, sans importer de dépendances externes.
 CONTRAINTES PACKAGES EXTERNES :
 ➤ INTERDIT : N'utilise ou n'importe AUCUN package externe React Native (react-navigation, @react-native-community, react-native-vector-icons, etc.)
