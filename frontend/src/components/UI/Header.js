@@ -9,7 +9,7 @@ export const Header = ({ activeSection, onNavigate }) => (
           <a className="stretched-link" href="#">
             <img src="https://boosted.orange.com/docs/5.3/assets/brand/orange-logo.svg" width="50" height="50" alt="React AI Generator - Back to Home" loading="lazy" />
           </a>
-          <h1 className="title">React AI Generator</h1>
+          <h1 className="title">AppGen Studio</h1>
         </div>
         
         {/* Navbar with links */}
