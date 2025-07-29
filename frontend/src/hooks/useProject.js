@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { usePersistentState } from './usePersistentState';
 
-export const useProject = () => {
-  const defaultProject = {
-    "/App.js": `import React, { useState } from 'react';
+const defaultProject = {
+  "/App.js": `import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native-web';
 import Button from './components/Button';
 import Counter from './components/Counter';
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   }
 });`,
-    "/components/Button.js": `import React from 'react';
+  "/components/Button.js": `import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native-web';
 
 export default function Button({ onPress, text, disabled = false }) {
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
     color: '#888',
   }
 });`,
-    "/components/Counter.js": `import React from 'react';
+  "/components/Counter.js": `import React from 'react';
 import { View, Text, StyleSheet } from 'react-native-web';
 
 export default function Counter({ count }) {
@@ -120,10 +119,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   }
 });`
-  };
+};
 
-  const [currentProject, setCurrentProject] = useState(defaultProject);
-  const [selectedFile, setSelectedFile] = useState("/App.js");
+export const useProject = () => {
+  const [currentProject, setCurrentProject] = usePersistentState('currentProject', defaultProject);
+  const [selectedFile, setSelectedFile] = usePersistentState('selectedFile', "/App.js");
 
   const resetProject = () => {
     if (window.confirm("Êtes-vous sûr de vouloir réinitialiser le projet ?")) {

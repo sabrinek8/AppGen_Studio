@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { usePersistentState } from './usePersistentState';
 
 export const useNavigation = () => {
-  const [activeSection, setActiveSection] = useState('generator');
+  const [activeSection, setActiveSection] = usePersistentState('activeSection', 'generator');
 
   const navigateTo = (section) => {
     setActiveSection(section);

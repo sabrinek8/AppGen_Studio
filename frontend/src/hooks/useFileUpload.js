@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { usePersistentState } from './usePersistentState';
 
 export const useFileUpload = () => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [fileContents, setFileContents] = useState({});
+  const [selectedFiles, setSelectedFiles] = usePersistentState('selectedFiles', []);
+  const [fileContents, setFileContents] = usePersistentState('fileContents', {});
 
   const isPDF = (file) => {
     return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
@@ -49,7 +50,6 @@ export const useFileUpload = () => {
   }, []);
 
   const addFile = useCallback(async (file) => {
-    // Vérifier si le fichier n'est pas déjà ajouté
     const isAlreadyAdded = selectedFiles.some(f => 
       f.name === file.name && f.size === file.size
     );
@@ -68,15 +68,14 @@ export const useFileUpload = () => {
         content = await readFileContent(file);
       }
       
-      setSelectedFiles(prev => [...prev, file]);
-      setFileContents(prev => ({
-        ...prev,
-        [file.name]: content
-      }));
+      const fileInfo = { name: file.name, size: file.size, type: file.type };
+      
+      setSelectedFiles(prev => [...prev, fileInfo]);
+      setFileContents(prev => ({ ...prev, [file.name]: content }));
     } catch (error) {
       alert(`Erreur lors de la lecture du fichier: ${error.message}`);
     }
-  }, [selectedFiles, readFileContent]);
+  }, [selectedFiles, readFileContent, setSelectedFiles, setFileContents]);
 
   const removeFile = useCallback((index) => {
     const file = selectedFiles[index];
@@ -88,12 +87,12 @@ export const useFileUpload = () => {
         return newContents;
       });
     }
-  }, [selectedFiles]);
+  }, [selectedFiles, setSelectedFiles, setFileContents]);
 
   const clearAllFiles = useCallback(() => {
     setSelectedFiles([]);
     setFileContents({});
-  }, []);
+  }, [setSelectedFiles, setFileContents]);
 
   const getFilesContext = useCallback(() => {
     if (selectedFiles.length === 0) return '';

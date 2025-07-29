@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { usePersistentState } from './usePersistentState';
 
 export const useProjectGenerator = () => {
-  const [projectDescription, setProjectDescription] = useState("");
-  const [projectFeatures, setProjectFeatures] = useState("");
+  const [projectDescription, setProjectDescription] = usePersistentState('projectDescription', "");
+  const [projectFeatures, setProjectFeatures] = usePersistentState('projectFeatures', "");
   const [isGenerating, setIsGenerating] = useState(false);
 
   const API_BASE_URL = "http://localhost:8000";
