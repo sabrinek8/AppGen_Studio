@@ -4,5 +4,6 @@ export { useNavigation } from './useNavigation';
 export { useFileHandler } from './useFileHandler';
 export { useFileUpload } from './useFileUpload';
 export {usePersistentState} from './usePersistentState';
+export { useProjectChat } from './useProjectChat';
 
 

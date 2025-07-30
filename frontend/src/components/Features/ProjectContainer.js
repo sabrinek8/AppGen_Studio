@@ -1,5 +1,5 @@
 import React from 'react';
-import { useProject, useProjectGenerator, useNavigation, useFileHandler } from '../../hooks';
+import { useProject, useProjectGenerator, useNavigation, useFileHandler , useProjectChat } from '../../hooks';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { exportProjectAsZip, exportProjectAsZipSimple } from '../../utils/zipExport';
 import { GeneratorSection } from './GeneratorSection';
@@ -35,12 +35,26 @@ export const ProjectContainer = () => {
     clearAllFiles,
     getFilesContext
   } = useFileUpload();
+  
+    const {
+    currentProjectId,
+    storeProject,
+    resetProject: resetChatProject
+  } = useProjectChat();
 
   const handleGenerate = async () => {
     try {
       const filesContext = getFilesContext();
       const projectData = await generateProject(filesContext);
-      importProject(projectData);
+      // Extract files from the response structure
+      const files = projectData.files || projectData;
+      const projectId = projectData.project_id;
+      // Import the project files for preview
+      importProject(files);
+      // Store project for chat functionality
+      if (projectId) {
+        await storeProject(projectData);
+      }
       navigateTo('preview');
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
@@ -48,10 +62,21 @@ export const ProjectContainer = () => {
     }
   };
 
+  const handleProjectUpdate = (updatedProject) => {
+    // Update the current project when modified via chat
+    importProject(updatedProject);
+  };
+
   const handleImport = async (file) => {
     try {
       const projectData = await importFromFile(file);
       importProject(projectData);
+      // Store imported project for chat
+      try {
+        await storeProject(projectData);
+      } catch (error) {
+        console.warn('Impossible de stocker le projet importé pour le chat:', error);
+      }
       navigateTo('preview');
     } catch (error) {
       alert(error.message);
@@ -92,6 +117,7 @@ export const ProjectContainer = () => {
     if (success) {
       resetForm();
       clearAllFiles();
+      resetChatProject();
       navigateTo('generator');
     }
   };
@@ -117,6 +143,8 @@ export const ProjectContainer = () => {
           <PreviewSection
             currentProject={currentProject}
             selectedFile={selectedFile}
+            projectId={currentProjectId}
+            onProjectUpdate={handleProjectUpdate}
           />
         );
       case 'manage':
