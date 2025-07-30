@@ -15,7 +15,8 @@ class ClaudeLLM(LLM):
             api_key=llm_api_key,
             base_url=llm_base_url
         )
-        self.model_name = "vertex_ai/claude3.7-sonnet" 
+        self.model_name ="openai/gpt-4o"
+        #self.model_name = "vertex_ai/claude3.7-sonnet" 
         self.model = self.model_name
     def call(self, messages: List[Dict], **kwargs) -> str:
         # Claude via OpenAI proxy supports OpenAI format (assumed by CrewAI)
@@ -24,7 +25,7 @@ class ClaudeLLM(LLM):
             messages=messages,
             temperature=kwargs.get("temperature", 0.7),
             top_p=kwargs.get("top_p", 1.0),
-            max_tokens=kwargs.get("max_tokens", 64000)
+            max_tokens=kwargs.get("max_tokens", 16000)
         )
         if hasattr(response, 'usage'):
             usage = response.usage
