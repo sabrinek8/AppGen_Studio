@@ -1,7 +1,8 @@
 import React from 'react';
-import { useProject, useProjectGenerator, useNavigation, useFileHandler , useProjectChat } from '../../hooks';
+import { useProject, useProjectGenerator, useNavigation, useFileHandler, useProjectChat } from '../../hooks';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { exportProjectAsZip, exportProjectAsZipSimple } from '../../utils/zipExport';
+import { clearAllChatData, clearProjectChatHistory } from '../../utils/chatUtils';
 import { GeneratorSection } from './GeneratorSection';
 import { PreviewSection } from './PreviewSection';
 import { ManagementSection } from './ManagementSection';
@@ -35,8 +36,8 @@ export const ProjectContainer = () => {
     clearAllFiles,
     getFilesContext
   } = useFileUpload();
-  
-    const {
+
+  const {
     currentProjectId,
     storeProject,
     resetProject: resetChatProject
@@ -46,15 +47,19 @@ export const ProjectContainer = () => {
     try {
       const filesContext = getFilesContext();
       const projectData = await generateProject(filesContext);
+      
       // Extract files from the response structure
       const files = projectData.files || projectData;
       const projectId = projectData.project_id;
+      
       // Import the project files for preview
       importProject(files);
+      
       // Store project for chat functionality
       if (projectId) {
         await storeProject(projectData);
       }
+      
       navigateTo('preview');
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
@@ -71,17 +76,20 @@ export const ProjectContainer = () => {
     try {
       const projectData = await importFromFile(file);
       importProject(projectData);
+      
       // Store imported project for chat
       try {
         await storeProject(projectData);
       } catch (error) {
         console.warn('Impossible de stocker le projet importé pour le chat:', error);
       }
+      
       navigateTo('preview');
     } catch (error) {
       alert(error.message);
-      }
+    }
   };
+
   const handleExportZip = async (projectData) => {
     try {
       if (!projectData || Object.keys(projectData).length === 0) {
@@ -92,11 +100,9 @@ export const ProjectContainer = () => {
       console.log('Données du projet à exporter:', projectData);
       console.log('Nombre de fichiers:', Object.keys(projectData).length);
       
-      // Generate a project name based on the current date
       const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-T]/g, '');
       const projectName = `react-project-${timestamp}`;
       
-      // Use the updated export method
       try {
         await exportProjectAsZip(projectData, projectName);
         alert('Files téléchargés avec succès ! 🎉');
@@ -118,7 +124,27 @@ export const ProjectContainer = () => {
       resetForm();
       clearAllFiles();
       resetChatProject();
+      clearAllChatData(); // Clear all chat data from localStorage
       navigateTo('generator');
+    }
+  };
+
+ const handleClearChatHistory = () => {
+    if (!currentProjectId) {
+      alert("Aucun projet actif pour effacer l'historique de chat.");
+      return;
+    }
+    
+    if (window.confirm("Êtes-vous sûr de vouloir effacer l'historique de chat pour ce projet ?")) {
+      try {
+        clearProjectChatHistory(currentProjectId);
+        alert("Historique de chat effacé avec succès !");
+        // Force reload of the page to refresh the chat interface
+        window.location.reload();
+      } catch (error) {
+        console.error('Erreur lors de l\'effacement:', error);
+        alert("Erreur lors de l'effacement de l'historique.");
+      }
     }
   };
 
@@ -154,7 +180,9 @@ export const ProjectContainer = () => {
             onExport={exportProject}
             onExportZip={handleExportZip}
             onReset={handleReset}
+            onClearChatHistory={handleClearChatHistory}
             currentProject={currentProject}
+            currentProjectId={currentProjectId}
           />
         );
       default:

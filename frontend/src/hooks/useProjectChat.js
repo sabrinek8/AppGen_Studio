@@ -1,8 +1,10 @@
+// frontend/src/hooks/useProjectChat.js
 import { useState, useCallback } from 'react';
+import { usePersistentState } from './usePersistentState';
 
 export const useProjectChat = () => {
-  const [currentProjectId, setCurrentProjectId] = useState(null);
-  const [projectVersion, setProjectVersion] = useState(1);
+  const [currentProjectId, setCurrentProjectId] = usePersistentState('current_project_id', null);
+  const [projectVersion, setProjectVersion] = usePersistentState('project_version', 1);
 
   const API_BASE_URL = "http://localhost:8000";
 

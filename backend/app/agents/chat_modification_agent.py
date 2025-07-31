@@ -1,11 +1,8 @@
 from crewai import Agent, Task
 from app.core.ClaudeLLM import ClaudeLLM
 from typing import Dict, Any
-from app.core.AzureGithubLLM import AzureGitHubLLM
 
 llm_claude = ClaudeLLM()
-#llm_azure=AzureGitHubLLM()
-
 
 chat_modification_agent = Agent(
     role="React Native Web Project Modifier",
@@ -32,32 +29,36 @@ def create_modification_task(user_message: str, current_project: Dict[str, str])
     
     task_description = f"""Modifie le projet React Native Web existant selon cette demande utilisateur : "{user_message}"
 
-PROJET ACTUEL :
+PROJET ACTUEL COMPLET :
 {project_context}
 
-RÈGLES DE MODIFICATION :
+RÈGLES DE MODIFICATION CRITIQUES :
+➤ RETOURNE TOUJOURS LE PROJET COMPLET avec TOUS les fichiers
 ➤ Applique UNIQUEMENT les modifications demandées par l'utilisateur
-➤ Conserve toute la structure et fonctionnalité existante non mentionnée
+➤ Conserve EXACTEMENT tous les autres fichiers sans modification
 ➤ Pour les couleurs/thèmes : Modifie les StyleSheet appropriés
 ➤ Pour les logos/images : Utilise des émojis ou caractères Unicode si pas d'URL fournie
 ➤ Pour les fonctionnalités : Ajoute le code nécessaire sans casser l'existant
 ➤ Garde la compatibilité React Native Web
 ➤ Respecte les mêmes contraintes : pas de packages externes
 
-TYPES DE MODIFICATIONS SUPPORTÉES :
-- Couleurs et thèmes (backgroundColor, color, etc.)
-- Logos et icônes (émojis, Unicode, ou URLs d'images)
-- Textes et labels
-- Tailles et espacements
-- Ajout de nouvelles fonctionnalités simples
-- Réorganisation de l'interface
+STRUCTURE DE SORTIE OBLIGATOIRE :
+➤ Format JSON contenant TOUS les fichiers du projet (modifiés ET non-modifiés)
+➤ Clé = chemin du fichier, Valeur = code complet du fichier
+➤ Inclus tous les fichiers existants même s'ils ne sont pas modifiés
 
-Format de sortie JSON uniquement : {{ "chemin/fichier.js": "code complet modifié" }}
+EXEMPLE de structure attendue :
+{{
+  "/App.js": "code complet du fichier App.js",
+  "/components/Button.js": "code complet du fichier Button.js", 
+  "/components/Counter.js": "code complet du fichier Counter.js",
+  ... (tous les autres fichiers)
+}}
 
-Si la demande n'est pas claire ou impossible, retourne le projet original avec un commentaire explicatif."""
+IMPORTANT : Ne retourne PAS seulement les fichiers modifiés, mais le projet ENTIER avec les modifications appliquées."""
     
     return Task(
         description=task_description,
-        expected_output="Un JSON contenant les fichiers React Native Web modifiés selon la demande utilisateur.",
+        expected_output="Un JSON contenant TOUS les fichiers React Native Web du projet complet avec les modifications demandées appliquées.",
         agent=chat_modification_agent
     )

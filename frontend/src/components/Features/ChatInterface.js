@@ -1,12 +1,14 @@
+// frontend/src/components/Features/ChatInterface.js
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, SectionHeader } from '../UI';
 import { MessageCircle, Send, Loader, Sparkles } from 'lucide-react';
+import { usePersistentState } from '../../hooks/usePersistentState';
 
 export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = usePersistentState(`chat_messages_${projectId}`, []);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]);
+  const [lastSyncedProject, setLastSyncedProject] = usePersistentState('last_synced_project', null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -24,21 +26,31 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
     }
   }, [isVisible]);
 
-  // Load chat history when project changes
+  // Load chat history when project changes or component mounts
   useEffect(() => {
-    if (projectId) {
+    if (projectId && projectId !== lastSyncedProject) {
       loadChatHistory();
+      setLastSyncedProject(projectId);
     }
-  }, [projectId]);
+  }, [projectId, lastSyncedProject, setLastSyncedProject]);
 
   const loadChatHistory = async () => {
     try {
       const response = await fetch(`http://localhost:8000/api/chat/chat/${projectId}/history`);
       if (response.ok) {
         const data = await response.json();
-        if (data.success) {
-          setMessages(data.chat_history || []);
-          setChatHistory(data.chat_history || []);
+        if (data.success && data.chat_history) {
+          // Only sync if server has more recent data
+          const serverMessages = data.chat_history || [];
+          const localMessages = messages || [];
+          
+          // Compare lengths to determine if we need to sync
+          if (serverMessages.length > localMessages.length) {
+            console.log('Syncing chat history from server');
+            setMessages(serverMessages);
+          } else if (localMessages.length > serverMessages.length) {
+            console.log('Local history is more recent, keeping local data');
+          }
         }
       }
     } catch (error) {
@@ -55,7 +67,9 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
       timestamp: new Date().toISOString()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    // Update messages immediately for better UX
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInputMessage('');
     setIsLoading(true);
 
@@ -79,7 +93,9 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
           timestamp: new Date().toISOString()
         };
 
-        setMessages(prev => [...prev, botMessage]);
+        // Update messages with bot response
+        const finalMessages = [...updatedMessages, botMessage];
+        setMessages(finalMessages);
 
         // Update project if modifications were made
         if (data.updated_project) {
@@ -91,7 +107,8 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
           content: `❌ ${data.message || 'Une erreur est survenue'}`,
           timestamp: new Date().toISOString()
         };
-        setMessages(prev => [...prev, errorMessage]);
+        const finalMessages = [...updatedMessages, errorMessage];
+        setMessages(finalMessages);
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
@@ -100,7 +117,8 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
         content: '❌ Erreur de connexion. Vérifiez que le serveur backend fonctionne.',
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, errorMessage]);
+      const finalMessages = [...updatedMessages, errorMessage];
+      setMessages(finalMessages);
     } finally {
       setIsLoading(false);
     }

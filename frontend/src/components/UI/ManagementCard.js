@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, variant = 'primary' }) => {
   const getButtonClass = () => {
     const variants = {
@@ -66,7 +64,8 @@ export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, var
         </div>
       </div>
       
-      {action && (
+      {/* Show button if action exists */}
+      {action && actionLabel && (
         <button
           type="button"
           className={getButtonClass()}
@@ -74,6 +73,23 @@ export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, var
           style={{
             width: '100%',
             marginTop: '12px'
+          }}
+        >
+          {actionLabel}
+        </button>
+      )}
+      
+      {/* Show disabled button if no action but label exists */}
+      {!action && actionLabel && (
+        <button
+          type="button"
+          className="btn btn-secondary"
+          disabled
+          style={{
+            width: '100%',
+            marginTop: '12px',
+            opacity: 0.5,
+            cursor: 'not-allowed'
           }}
         >
           {actionLabel}
