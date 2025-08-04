@@ -56,5 +56,6 @@ backend/.env
 backend/token_usage
 venv/
 backend/.env/
+backend/mlruns
 **/__pycache__/
 backend/**/*.db

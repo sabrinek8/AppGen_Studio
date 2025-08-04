@@ -1,4 +1,3 @@
-# backend/app/services/chat_service.py
 import json
 import logging
 from typing import Dict, Any, List, Optional

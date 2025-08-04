@@ -3,8 +3,6 @@ import logging
 from app.models.schemas import ProjectRequest, ProjectResponse
 from app.agents.frontend_generator_agent import frontend_generator_agent,create_react_native_web_task
 from crewai import Crew
-from app.services.chat_service import project_chat_service
-import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +30,7 @@ async def generate_react_project(request: ProjectRequest) -> ProjectResponse:
         result = crew.kickoff()
         result_str = str(result.output).strip() if hasattr(result, "output") else str(result).strip()
         project_data = extract_json_from_output(result_str)
-        
-        # Generate unique project ID and store the project
-        project_id = str(uuid.uuid4())
-        project_chat_service.store_project(project_id, project_data)
-        
-        return ProjectResponse(
-            success=True, 
-            project_data={"project_id": project_id, "files": project_data}
-        )
+        return ProjectResponse(success=True, project_data=project_data)
     except ValueError as e:
         return ProjectResponse(success=False, error=str(e))
     except Exception as e:
