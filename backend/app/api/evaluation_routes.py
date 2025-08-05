@@ -1,20 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from app.models.schemas import EvaluationRequest, EvaluationResponse
 from app.evaluation.simple_evaluator import SimpleFrontendEvaluator, SIMPLE_TEST_CASES
 import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
-
-class EvaluationRequest(BaseModel):
-    test_cases: Optional[List[Dict[str, Any]]] = None
-    use_default_cases: bool = True
-
-class EvaluationResponse(BaseModel):
-    success: bool
-    results: Optional[Dict[str, Any]] = None
-    error: Optional[str] = None
 
 @router.post("/evaluate", response_model=EvaluationResponse)
 async def evaluate_frontend_generator(request: EvaluationRequest):
@@ -42,7 +32,7 @@ async def evaluate_frontend_generator(request: EvaluationRequest):
             success=True,
             results=results
         )
-        
+    
     except Exception as e:
         logger.exception("Error during evaluation")
         return EvaluationResponse(
@@ -87,7 +77,7 @@ async def get_latest_evaluation_metrics():
         }
         
         return {"success": True, "metrics": metrics}
-        
+    
     except Exception as e:
         logger.exception("Error retrieving evaluation metrics")
         raise HTTPException(status_code=500, detail=str(e))

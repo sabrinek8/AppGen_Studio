@@ -37,3 +37,12 @@ class ProjectHistoryResponse(BaseModel):
     project_id: str
     chat_history: List[ChatMessage]
     current_project: Dict[str, str]
+
+class EvaluationRequest(BaseModel):
+    test_cases: Optional[List[Dict[str, Any]]] = None
+    use_default_cases: bool = True
+
+class EvaluationResponse(BaseModel):
+    success: bool
+    results: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
