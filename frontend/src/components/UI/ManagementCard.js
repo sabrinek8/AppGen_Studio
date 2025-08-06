@@ -5,7 +5,8 @@ export const ManagementCard = ({ icon, title, subtitle, action, actionLabel, var
       secondary: 'btn btn-secondary',
       info: 'btn btn-info',
       success: 'btn btn-success',
-      danger: 'btn btn-danger'
+      danger: 'btn btn-danger',
+      warning:'btn btn-warning'
     };
     return variants[variant] || variants.secondary;
   };
