@@ -1,8 +1,10 @@
 from crewai import Agent, Task
 from app.core.ClaudeLLM import ClaudeLLM
 from app.core.AzureGithubLLM import AzureGitHubLLM
+from app.core.OpenaiLLM import OpenaiLLM
 
-llm_claude = ClaudeLLM()
+#llm_claude = ClaudeLLM()
+llm_gpt=OpenaiLLM()
 #llm_azure=AzureGitHubLLM()
 
 frontend_generator_agent = Agent(
@@ -11,7 +13,7 @@ frontend_generator_agent = Agent(
     backstory="Expert React Native Web (necolas/react-native-web), spécialisé dans la génération d'UI web utilisant l'API React Native.",
     verbose=False,
     allow_delegation=False,
-    llm=llm_claude
+    llm=llm_gpt
 )
 
 def create_react_native_web_task(description: str, features: str = "") -> Task:
