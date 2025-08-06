@@ -79,7 +79,7 @@ export const ManagementSection = ({
         <div>
           <div className="title-bar">
             <div className="container-xxl">
-              <h1 className="display-3">Outils de Projet</h1>
+              <h1 className="display-4">Outils de Projet</h1>
             </div>
           </div>
 
@@ -121,7 +121,7 @@ export const ManagementSection = ({
         <div>
           <div className="title-bar">
             <div className="container-xxl">
-              <h1 className="display-3">Historique des Conversations</h1>
+              <h1 className="display-4">Historique des Conversations</h1>
             </div>
           </div>
 
@@ -169,7 +169,7 @@ export const ManagementSection = ({
         <div style={{ gridColumn: '1 / -1' }}>
           <div className="title-bar">
             <div className="container-xxl">
-              <h1 className="display-3">Système</h1>
+              <h1 className="display-4">Système</h1>
             </div>
           </div>
 

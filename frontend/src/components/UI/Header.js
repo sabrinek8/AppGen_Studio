@@ -13,7 +13,7 @@ export const Header = ({ activeSection, onNavigate }) => (
         </div>
         
         {/* Navbar with links */}
-        <ul className="navbar-nav">
+        <ul className="navbar-nav ms-auto">
           <li className="nav-item">
             <a 
               className={`nav-link ${activeSection === 'generator' ? 'active' : ''}`} 
