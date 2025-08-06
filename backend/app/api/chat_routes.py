@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.models.schemas import ChatRequest, ChatResponse, ProjectHistoryResponse
+from app.models.schemas import ChatRequest , ChatResponse , ProjectHistoryResponse
 from app.services.chat_service import project_chat_service
 import logging
 

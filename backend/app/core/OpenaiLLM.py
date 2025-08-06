@@ -9,7 +9,7 @@ load_dotenv()
 
 llm_api_key = os.getenv("API_KEY")
 llm_base_url= os.getenv("BASE_URL")
-class ClaudeLLM(LLM):
+class OpenaiLLM(LLM):
     def __init__(self):
         self.client = openai.OpenAI(
             api_key=llm_api_key,
