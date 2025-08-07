@@ -1,4 +1,3 @@
-// frontend/src/components/Features/EnhancedPreviewSection.js
 import React, { useState } from 'react';
 import { Sandpack } from '@codesandbox/sandpack-react';
 import { githubLight } from "@codesandbox/sandpack-themes";

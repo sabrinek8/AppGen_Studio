@@ -5,5 +5,6 @@ export { useFileHandler } from './useFileHandler';
 export { useFileUpload } from './useFileUpload';
 export {usePersistentState} from './usePersistentState';
 export { useProjectChat } from './useProjectChat';
+export {useAlerts} from  './useAlerts';
 
 

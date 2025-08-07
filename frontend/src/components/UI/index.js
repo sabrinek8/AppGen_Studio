@@ -7,5 +7,7 @@ export * from './SectionHeader';
 export * from './Textarea';
 export * from './ManagementCard';
 export * from './FileUpload';
+export * from './Alert';
+export * from './AlertContainer';
 
 

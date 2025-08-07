@@ -1,4 +1,3 @@
-// frontend/src/components/Features/ChatInterface.js
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, SectionHeader } from '../UI';
 import { MessageCircle, Send, Loader, Sparkles } from 'lucide-react';

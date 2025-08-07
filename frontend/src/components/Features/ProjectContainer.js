@@ -1,13 +1,24 @@
 import React from 'react';
 import { useProject, useProjectGenerator, useNavigation, useFileHandler, useProjectChat } from '../../hooks';
 import { useFileUpload } from '../../hooks/useFileUpload';
+import { useAlerts } from '../../hooks/useAlerts';
 import { exportProjectAsZip, exportProjectAsZipSimple } from '../../utils/zipExport';
 import { clearAllChatData, clearProjectChatHistory } from '../../utils/chatUtils';
 import { GeneratorSection } from './GeneratorSection';
 import { PreviewSection } from './PreviewSection';
 import { ManagementSection } from './ManagementSection';
+import { AlertContainer } from '../UI/AlertContainer';
 
 export const ProjectContainer = () => {
+  const { 
+    alerts,
+    showSuccess,
+    showError,
+    showWarning,
+    showInfo,
+    removeAlert
+  } = useAlerts();
+  
   const { 
     currentProject, 
     selectedFile, 
@@ -61,9 +72,10 @@ export const ProjectContainer = () => {
       }
       
       navigateTo('preview');
+      showSuccess('Projet généré avec succès ! ');
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
-      alert(`Erreur lors de la génération : ${error.message}`);
+      showError(`Erreur lors de la génération : ${error.message}`);
     }
   };
 
@@ -82,18 +94,20 @@ export const ProjectContainer = () => {
         await storeProject(projectData);
       } catch (error) {
         console.warn('Impossible de stocker le projet importé pour le chat:', error);
+        showWarning('Projet importé mais impossible de l\'associer au chat.');
       }
       
       navigateTo('preview');
+      showSuccess('Projet importé avec succès !');
     } catch (error) {
-      alert(error.message);
+      showError(error.message);
     }
   };
 
   const handleExportZip = async (projectData) => {
     try {
       if (!projectData || Object.keys(projectData).length === 0) {
-        alert('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
+        showWarning('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
         return;
       }
       
@@ -105,16 +119,16 @@ export const ProjectContainer = () => {
       
       try {
         await exportProjectAsZip(projectData, projectName);
-        alert('Files téléchargés avec succès ! 🎉');
+        showSuccess('Fichiers téléchargés avec succès ! 🎉');
       } catch (zipError) {
         console.log('Erreur ZIP, utilisation du fallback:', zipError.message);
         exportProjectAsZipSimple(projectData, projectName);
-        alert('Tous les fichiers ont été téléchargés individuellement.');
+        showInfo('Tous les fichiers ont été téléchargés individuellement.');
       }
       
     } catch (error) {
       console.error('Erreur lors de l\'export:', error);
-      alert('Erreur lors de l\'export du projet: ' + error.message);
+      showError('Erreur lors de l\'export du projet: ' + error.message);
     }
   };
 
@@ -126,25 +140,34 @@ export const ProjectContainer = () => {
       resetChatProject();
       clearAllChatData(); // Clear all chat data from localStorage
       navigateTo('generator');
+      showInfo('Projet réinitialisé avec succès.');
+    } else {
+      showError('Erreur lors de la réinitialisation du projet.');
     }
   };
 
- const handleClearChatHistory = () => {
+  const handleClearChatHistory = () => {
     if (!currentProjectId) {
-      alert("Aucun projet actif pour effacer l'historique de chat.");
+      showWarning("Aucun projet actif pour effacer l'historique de chat.");
       return;
     }
     
-    if (window.confirm("Êtes-vous sûr de vouloir effacer l'historique de chat pour ce projet ?")) {
+    // Create a confirmation modal instead of using window.confirm
+    const confirmClear = () => {
       try {
         clearProjectChatHistory(currentProjectId);
-        alert("Historique de chat effacé avec succès !");
+        showSuccess("Historique de chat effacé avec succès !");
         // Force reload of the page to refresh the chat interface
-        window.location.reload();
+        setTimeout(() => window.location.reload(), 1500);
       } catch (error) {
         console.error('Erreur lors de l\'effacement:', error);
-        alert("Erreur lors de l'effacement de l'historique.");
+        showError("Erreur lors de l'effacement de l'historique.");
       }
+    };
+
+    // You might want to implement a proper modal here instead
+    if (window.confirm("Êtes-vous sûr de vouloir effacer l'historique de chat pour ce projet ?")) {
+      confirmClear();
     }
   };
 
@@ -193,6 +216,20 @@ export const ProjectContainer = () => {
   return {
     activeSection,
     navigateTo,
-    renderActiveSection
+    renderActiveSection: () => (
+      <>
+        {/* Alert Container */}
+        <AlertContainer 
+          alerts={alerts}
+          onRemove={removeAlert}
+          position="top-right"
+        />
+        
+        {/* Main Content */}
+        <div className="project-container">
+          {renderActiveSection()}
+        </div>
+      </>
+    )
   };
 };

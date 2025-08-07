@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { ManagementCard } from '../UI';
 import { FolderOpen, Save, RotateCcw, Archive, MessageSquare, Trash2, Settings, Database } from 'lucide-react';
 import { exportChatHistory } from '../../utils/chatUtils';
@@ -11,13 +12,8 @@ export const ManagementSection = ({
   currentProject,
   currentProjectId
 }) => {
-  // Debug log to check if props are received
-  console.log('ManagementSection props:', {
-    onClearChatHistory: typeof onClearChatHistory,
-    currentProjectId,
-    hasCurrentProject: !!currentProject
-  });
-  
+  const [alert, setAlert] = useState(null); // { type: 'success' | 'danger' | 'info', message: string }
+
   const handleImportFile = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -27,23 +23,39 @@ export const ManagementSection = ({
 
   const handleExportZip = () => {
     if (!currentProject || Object.keys(currentProject).length === 0) {
-      alert('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
+      setAlert({
+        type: 'danger',
+        message: "Aucun projet à exporter. Veuillez d'abord générer ou importer un projet."
+      });
       return;
     }
     onExportZip(currentProject);
+    setAlert({
+      type: 'success',
+      message: "Projet exporté en ZIP avec succès."
+    });
   };
 
   const handleExportChatHistory = () => {
     if (!currentProjectId) {
-      alert('Aucun projet actif pour exporter l\'historique de chat.');
+      setAlert({
+        type: 'warning',
+        message: "Aucun projet actif pour exporter l'historique de chat."
+      });
       return;
     }
-    
+
     const success = exportChatHistory(currentProjectId);
     if (success) {
-      alert('Historique de chat exporté avec succès !');
+      setAlert({
+        type: 'success',
+        message: "Historique de chat exporté avec succès !"
+      });
     } else {
-      alert('Aucun historique de chat trouvé pour ce projet.');
+      setAlert({
+        type: 'danger',
+        message: "Aucun historique de chat trouvé pour ce projet."
+      });
     }
   };
 
@@ -53,6 +65,16 @@ export const ManagementSection = ({
       backgroundColor: '#ffffff',
       padding: '32px 20px'
     }}>
+
+      {/* Boosted Orange Alert */}
+      {alert && (
+        <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert" style={{ maxWidth: '1000px', margin: '0 auto 20px auto' }}>
+          <span className="alert-icon "></span>
+          <p style={{ margin: 0 }}>{alert.message}</p>
+          <button type="button" className="btn-close" aria-label="Close" onClick={() => setAlert(null)}></button>
+        </div>
+      )}
+
       {/* Header Section */}
       <div style={{
         maxWidth: '1200px',
