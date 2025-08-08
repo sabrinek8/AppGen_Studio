@@ -5,3 +5,4 @@ crewai==0.28.8
 python-multipart==0.0.6
 requests==2.31.0
 PyPDF2==3.0.1
+mlflow==2.8.1

@@ -3,11 +3,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router
 from app.api.pdf_routes import router as pdf_router
 from app.config.settings import configure_logging
+from app.config.mlflow_config import configure_mlflow, get_mlflow_ui_url
 from app.api.evaluation_routes import router as evaluation_router
 from app.api.chat_routes import router as chat_router
+import logging
+logger = logging.getLogger(__name__)
+
 
 # Config logging
 configure_logging()
+# Configure MLflow
+mlflow_configured = configure_mlflow()
+if mlflow_configured:
+    logger.info(f"MLflow UI available at: {get_mlflow_ui_url()}")
+else:
+    logger.warning("MLflow configuration failed - evaluation metrics will not be logged")
 
 app = FastAPI(title="React Project Generator API", version="1.0.0")
 
