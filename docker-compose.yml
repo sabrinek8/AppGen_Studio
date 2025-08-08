@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   backend:
     build:
@@ -9,6 +8,12 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      - mlflow_data:/app/mlruns
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_BACKEND_STORE_URI=file:///app/mlruns
+    depends_on:
+      - mlflow
 
   frontend:
     build:
@@ -16,3 +21,30 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:80"
+
+  mlflow:
+    image: python:3.11-slim
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlflow
+      - ./setup_mlflow.sh:/setup_mlflow.sh
+    working_dir: /
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y curl &&
+        pip install mlflow==2.8.1 &&
+        mkdir -p /mlflow &&
+        cd /mlflow &&
+        mlflow server --backend-store-uri file:///mlflow --host 0.0.0.0 --port 5000
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"] 
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  mlflow_data:
+    driver: local
