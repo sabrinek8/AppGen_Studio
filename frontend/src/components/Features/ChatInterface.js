@@ -1,4 +1,3 @@
-// frontend/src/components/Features/ChatInterface.js
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, SectionHeader } from '../UI';
 import { MessageCircle, Send, Loader, Sparkles } from 'lucide-react';
@@ -9,8 +8,10 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lastSyncedProject, setLastSyncedProject] = usePersistentState('last_synced_project', null);
+  const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState(0);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const suggestionIntervalRef = useRef(null);
 
   // Orange Boosted Color Palette
   const colors = {
@@ -35,6 +36,17 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
     gray900: '#000000',
   };
 
+  const quickSuggestions = [
+    "Change la couleur de fond en bleu",
+    "Ajoute un logo avec une icône 🚀",
+    "Met un thème sombre",
+    "Change la taille des boutons",
+    "Ajoute une animation",
+    "Modifie la typographie",
+    "Ajoute des ombres et effets",
+    "Change l'espacement des éléments"
+  ];
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -48,6 +60,23 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
       inputRef.current.focus();
     }
   }, [isVisible]);
+
+  // Auto-slide suggestions animation
+  useEffect(() => {
+    if (messages.length === 0 && projectId) {
+      suggestionIntervalRef.current = setInterval(() => {
+        setCurrentSuggestionIndex((prevIndex) => 
+          (prevIndex + 1) % quickSuggestions.length
+        );
+      }, 3000); // Change suggestion every 3 seconds
+    }
+
+    return () => {
+      if (suggestionIntervalRef.current) {
+        clearInterval(suggestionIntervalRef.current);
+      }
+    };
+  }, [messages.length, projectId, quickSuggestions.length]);
 
   // Load chat history when project changes or component mounts
   useEffect(() => {
@@ -154,17 +183,25 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
     }
   };
 
-  const quickSuggestions = [
-    "Change la couleur de fond en bleu",
-    "Ajoute un logo avec une icône 🚀",
-    "Met un thème sombre",
-    "Change la taille des boutons",
-    "Ajoute une animation"
-  ];
-
   const handleSuggestionClick = (suggestion) => {
     setInputMessage(suggestion);
     inputRef.current?.focus();
+  };
+
+  // Get visible suggestions for sliding animation
+  const getVisibleSuggestions = () => {
+    const visibleCount = 3; // Show 3 suggestions at a time
+    const suggestions = [];
+    
+    for (let i = 0; i < visibleCount; i++) {
+      const index = (currentSuggestionIndex + i) % quickSuggestions.length;
+      suggestions.push({
+        text: quickSuggestions[index],
+        index: index
+      });
+    }
+    
+    return suggestions;
   };
 
   if (!isVisible) {
@@ -223,7 +260,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
             color: colors.gray500,
             lineHeight: '1.5'
           }}>
-            L'assistant Orange sera disponible après la génération de votre projet
+            L'assistant IA sera disponible après la génération de votre projet
           </p>
         </div>
       ) : (
@@ -261,7 +298,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   color: colors.gray700,
                   fontWeight: '600'
                 }}>
-                  👋 Bonjour ! Je suis votre assistant IA .
+                  👋 Bonjour ! Je suis votre assistant IA.
                 </h4>
                 <p style={{ 
                   fontSize: '14px', 
@@ -272,7 +309,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   Décrivez-moi les modifications que vous souhaitez apporter à votre projet :
                 </p>
                 
-                {/* Quick Suggestions */}
+                {/* Animated Quick Suggestions */}
                 <div style={{ textAlign: 'left', maxWidth: '400px', margin: '0 auto' }}>
                   <p style={{ 
                     fontSize: '13px', 
@@ -286,39 +323,104 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                     💡 Suggestions rapides :
                   </p>
                   <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '8px'
+                    height: '200px', // Fixed height for 3 suggestions
+                    overflow: 'hidden',
+                    position: 'relative',
+                    borderRadius: '12px',
+                    border: `1px solid ${colors.gray200}`,
+                    backgroundColor: `${colors.primary}03`
                   }}>
-                    {quickSuggestions.map((suggestion, index) => (
-                      <button
+                    <div 
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        transform: `translateY(-${(currentSuggestionIndex % quickSuggestions.length) * 64}px)`,
+                        transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                        gap: '8px',
+                        padding: '8px'
+                      }}
+                    >
+                      {/* Render all suggestions in a continuous loop */}
+                      {[...quickSuggestions, ...quickSuggestions.slice(0, 3)].map((suggestion, index) => (
+                        <button
+                          key={`${suggestion}-${index}`}
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          style={{
+                            height: '56px', // Fixed height
+                            padding: '12px 16px',
+                            backgroundColor: colors.white,
+                            border: `1px solid ${colors.gray300}`,
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            textAlign: 'left',
+                            transition: 'all 0.3s ease',
+                            color: colors.gray700,
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.04)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = `${colors.primary}08`;
+                            e.target.style.borderColor = colors.primary;
+                            e.target.style.transform = 'translateX(4px) scale(1.02)';
+                            e.target.style.boxShadow = '0 4px 12px rgba(255, 121, 0, 0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = colors.white;
+                            e.target.style.borderColor = colors.gray300;
+                            e.target.style.transform = 'translateX(0) scale(1)';
+                            e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.04)';
+                          }}
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                    
+                    {/* Gradient overlays for smooth fade effect */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '20px',
+                      background: `linear-gradient(to bottom, ${colors.primary}03, transparent)`,
+                      pointerEvents: 'none',
+                      zIndex: 1
+                    }} />
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '20px',
+                      background: `linear-gradient(to top, ${colors.primary}03, transparent)`,
+                      pointerEvents: 'none',
+                      zIndex: 1
+                    }} />
+                  </div>
+                  
+                  {/* Animated dots indicator */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    marginTop: '16px'
+                  }}>
+                    {quickSuggestions.map((_, index) => (
+                      <div
                         key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
                         style={{
-                          padding: '12px 16px',
-                          backgroundColor: colors.white,
-                          border: `1px solid ${colors.gray300}`,
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                          textAlign: 'left',
-                          transition: 'all 0.2s ease',
-                          color: colors.gray700,
-                          fontWeight: '500'
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: index === currentSuggestionIndex % quickSuggestions.length ? colors.primary : colors.gray300,
+                          transition: 'all 0.3s ease',
+                          transform: index === currentSuggestionIndex % quickSuggestions.length ? 'scale(1.2)' : 'scale(1)'
                         }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = `${colors.primary}08`;
-                          e.target.style.borderColor = colors.primary;
-                          e.target.style.transform = 'translateY(-1px)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = colors.white;
-                          e.target.style.borderColor = colors.gray300;
-                          e.target.style.transform = 'translateY(0)';
-                        }}
-                      >
-                        {suggestion}
-                      </button>
+                      />
                     ))}
                   </div>
                 </div>
