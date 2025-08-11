@@ -21,7 +21,7 @@ export const PreviewSection = ({
         alignItems: 'center',
         gap: '8px',
         padding: '12px 20px',
-        backgroundColor: isActive ? '#667eea' : 'transparent',
+        backgroundColor: isActive ? '#ff7900' : 'transparent',
         color: isActive ? 'white' : '#666',
         border: 'none',
         borderRadius: '8px 8px 0 0',

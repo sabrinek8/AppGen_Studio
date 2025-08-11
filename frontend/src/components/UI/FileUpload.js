@@ -122,7 +122,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
           </div>
           <p style={{
             margin: '0 0 10px 0',
-            color: '#667eea',
+            color: '#f16e00',
             fontWeight: '600'
           }}>
             Glissez-déposez vos fichiers ici ou cliquez pour sélectionner

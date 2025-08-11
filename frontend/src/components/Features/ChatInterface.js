@@ -1,3 +1,4 @@
+// frontend/src/components/Features/ChatInterface.js
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, SectionHeader } from '../UI';
 import { MessageCircle, Send, Loader, Sparkles } from 'lucide-react';
@@ -10,6 +11,29 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
   const [lastSyncedProject, setLastSyncedProject] = usePersistentState('last_synced_project', null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Orange Boosted Color Palette
+  const colors = {
+    primary: '#FF7900',      // Orange primary
+    primaryHover: '#E55B00',  // Orange hover
+    secondary: '#000000',     // Black
+    success: '#32C832',       // Green
+    info: '#527EDB',         // Blue
+    warning: '#FC0',         // Yellow
+    danger: '#CD113B',       // Red
+    light: '#F6F6F6',        // Light gray
+    dark: '#000000',         // Black
+    white: '#FFFFFF',        // White
+    gray100: '#F6F6F6',
+    gray200: '#E5E5E5',
+    gray300: '#CCCCCC',
+    gray400: '#999999',
+    gray500: '#666666',
+    gray600: '#4D4D4D',
+    gray700: '#333333',
+    gray800: '#1A1A1A',
+    gray900: '#000000',
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -148,7 +172,15 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
   }
 
   return (
-    <Card style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
+    <Card style={{ 
+      height: '600px', 
+      display: 'flex', 
+      flexDirection: 'column',
+      border: `1px solid ${colors.gray200}`,
+      borderRadius: '12px',
+      backgroundColor: colors.white,
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+    }}>
       <SectionHeader
         icon={<MessageCircle size={24} />}
         title="Assistant IA"
@@ -162,15 +194,36 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
           alignItems: 'center',
           justifyContent: 'center',
           flexDirection: 'column',
-          color: '#7f8c8d',
-          textAlign: 'center'
+          color: colors.gray500,
+          textAlign: 'center',
+          padding: '40px 20px'
         }}>
-          <Sparkles size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-          <p style={{ fontSize: '18px', marginBottom: '8px' }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            backgroundColor: `${colors.primary}15`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '24px'
+          }}>
+            <Sparkles size={36} style={{ color: colors.primary }} />
+          </div>
+          <h3 style={{ 
+            fontSize: '20px', 
+            marginBottom: '12px', 
+            color: colors.gray700,
+            fontWeight: '600'
+          }}>
             Générez d'abord un projet
-          </p>
-          <p style={{ fontSize: '14px' }}>
-            L'assistant sera disponible après la génération
+          </h3>
+          <p style={{ 
+            fontSize: '14px', 
+            color: colors.gray500,
+            lineHeight: '1.5'
+          }}>
+            L'assistant Orange sera disponible après la génération de votre projet
           </p>
         </div>
       ) : (
@@ -180,28 +233,56 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
             flex: 1,
             overflowY: 'auto',
             padding: '20px',
-            backgroundColor: '#f8f9fa',
-            borderRadius: '12px',
-            marginBottom: '20px',
-            border: '1px solid #e9ecef'
+            backgroundColor: colors.white,
+            margin: '16px',
+            borderRadius: '8px'
           }}>
             {messages.length === 0 ? (
               <div style={{
                 textAlign: 'center',
-                color: '#7f8c8d',
+                color: colors.gray600,
                 padding: '40px 20px'
               }}>
-                <MessageCircle size={32} style={{ marginBottom: '16px', opacity: 0.5 }} />
-                <p style={{ fontSize: '16px', marginBottom: '20px' }}>
-                  👋 Bonjour ! Je suis votre assistant IA.
-                </p>
-                <p style={{ fontSize: '14px', marginBottom: '20px' }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  backgroundColor: `${colors.primary}15`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>
+                  <MessageCircle size={24} style={{ color: colors.primary }} />
+                </div>
+                <h4 style={{ 
+                  fontSize: '18px', 
+                  marginBottom: '12px',
+                  color: colors.gray700,
+                  fontWeight: '600'
+                }}>
+                  👋 Bonjour ! Je suis votre assistant IA .
+                </h4>
+                <p style={{ 
+                  fontSize: '14px', 
+                  marginBottom: '24px',
+                  color: colors.gray600,
+                  lineHeight: '1.5'
+                }}>
                   Décrivez-moi les modifications que vous souhaitez apporter à votre projet :
                 </p>
                 
                 {/* Quick Suggestions */}
-                <div style={{ textAlign: 'left' }}>
-                  <p style={{ fontSize: '12px', fontWeight: '600', marginBottom: '10px', color: '#6c757d' }}>
+                <div style={{ textAlign: 'left', maxWidth: '400px', margin: '0 auto' }}>
+                  <p style={{ 
+                    fontSize: '13px', 
+                    fontWeight: '600', 
+                    marginBottom: '12px', 
+                    color: colors.gray600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
                     💡 Suggestions rapides :
                   </p>
                   <div style={{
@@ -214,21 +295,26 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                         key={index}
                         onClick={() => handleSuggestionClick(suggestion)}
                         style={{
-                          padding: '8px 12px',
-                          backgroundColor: '#e3f2fd',
-                          border: '1px solid #bbdefb',
-                          borderRadius: '6px',
+                          padding: '12px 16px',
+                          backgroundColor: colors.white,
+                          border: `1px solid ${colors.gray300}`,
+                          borderRadius: '8px',
                           cursor: 'pointer',
                           fontSize: '13px',
                           textAlign: 'left',
                           transition: 'all 0.2s ease',
-                          color: '#1976d2'
+                          color: colors.gray700,
+                          fontWeight: '500'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = '#bbdefb';
+                          e.target.style.backgroundColor = `${colors.primary}08`;
+                          e.target.style.borderColor = colors.primary;
+                          e.target.style.transform = 'translateY(-1px)';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = '#e3f2fd';
+                          e.target.style.backgroundColor = colors.white;
+                          e.target.style.borderColor = colors.gray300;
+                          e.target.style.transform = 'translateY(0)';
                         }}
                       >
                         {suggestion}
@@ -248,17 +334,46 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   }}
                 >
                   <div style={{
-                    maxWidth: '70%',
-                    padding: '12px 16px',
-                    borderRadius: '18px',
-                    backgroundColor: message.role === 'user' ? '#667eea' : '#ffffff',
-                    color: message.role === 'user' ? 'white' : '#2c3e50',
-                    border: message.role === 'assistant' ? '1px solid #e9ecef' : 'none',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    maxWidth: '75%',
+                    padding: '14px 18px',
+                    borderRadius: message.role === 'user' ? '20px 20px 6px 20px' : '20px 20px 20px 6px',
+                    backgroundColor: message.role === 'user' ? colors.primary : colors.white,
+                    color: message.role === 'user' ? colors.white : colors.gray700,
+                    border: message.role === 'assistant' ? `1px solid ${colors.gray300}` : 'none',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                     fontSize: '14px',
-                    lineHeight: '1.4'
+                    lineHeight: '1.5',
+                    fontWeight: '500',
+                    position: 'relative'
                   }}>
                     {message.content}
+                    {message.role === 'user' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-6px',
+                        right: '16px',
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: colors.primary,
+                        transform: 'rotate(45deg)',
+                        borderRadius: '0 0 2px 0'
+                      }} />
+                    )}
+                    {message.role === 'assistant' && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '-6px',
+                        left: '16px',
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: colors.white,
+                        border: `1px solid ${colors.gray300}`,
+                        borderTop: 'none',
+                        borderRight: 'none',
+                        transform: 'rotate(45deg)',
+                        borderRadius: '0 0 2px 0'
+                      }} />
+                    )}
                   </div>
                 </div>
               ))
@@ -271,18 +386,29 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                 marginBottom: '16px'
               }}>
                 <div style={{
-                  padding: '12px 16px',
-                  borderRadius: '18px',
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e9ecef',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  padding: '14px 18px',
+                  borderRadius: '20px 20px 20px 6px',
+                  backgroundColor: colors.white,
+                  border: `1px solid ${colors.gray300}`,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '10px'
                 }}>
-                  <Loader size={16} className="animate-spin" />
-                  <span style={{ fontSize: '14px', color: '#7f8c8d' }}>
-                    L'IA travaille sur votre demande...
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: `2px solid ${colors.gray300}`,
+                    borderTop: `2px solid ${colors.primary}`,
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  <span style={{ 
+                    fontSize: '14px', 
+                    color: colors.gray600,
+                    fontWeight: '500'
+                  }}>
+                    L'assistant Orange travaille sur votre demande...
                   </span>
                 </div>
               </div>
@@ -293,61 +419,106 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
 
           {/* Input Area */}
           <div style={{
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'flex-end'
+            padding: '16px 20px 20px',
+            borderTop: `1px solid ${colors.gray200}`,
+            backgroundColor: colors.white
           }}>
-            <textarea
-              ref={inputRef}
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Décrivez la modification souhaitée... (Entrée pour envoyer)"
-              disabled={isLoading}
-              style={{
-                flex: 1,
-                padding: '12px 16px',
-                borderRadius: '12px',
-                border: '1px solid #e9ecef',
-                fontSize: '14px',
-                resize: 'none',
-                minHeight: '48px',
-                maxHeight: '120px',
-                fontFamily: 'inherit',
-                outline: 'none',
-                transition: 'border-color 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#667eea';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e9ecef';
-              }}
-            />
-            
-            <button
-              onClick={sendMessage}
-              disabled={!inputMessage.trim() || isLoading}
-              style={{
-                padding: '12px',
-                backgroundColor: inputMessage.trim() && !isLoading ? '#667eea' : '#e9ecef',
-                color: inputMessage.trim() && !isLoading ? 'white' : '#adb5bd',
-                border: 'none',
-                borderRadius: '12px',
-                cursor: inputMessage.trim() && !isLoading ? 'pointer' : 'not-allowed',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease',
-                minWidth: '48px',
-                height: '48px'
-              }}
-            >
-              {isLoading ? <Loader size={20} className="animate-spin" /> : <Send size={20} />}
-            </button>
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              alignItems: 'flex-end'
+            }}>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <textarea
+                  ref={inputRef}
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Décrivez la modification souhaitée... (Entrée pour envoyer)"
+                  disabled={isLoading}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    paddingRight: '50px',
+                    borderRadius: '24px',
+                    border: `2px solid ${colors.gray300}`,
+                    fontSize: '14px',
+                    resize: 'none',
+                    minHeight: '48px',
+                    maxHeight: '120px',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                    backgroundColor: colors.white,
+                    color: colors.gray700,
+                    fontWeight: '500'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = colors.primary;
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = colors.gray300;
+                  }}
+                />
+              </div>
+              
+              <button
+                onClick={sendMessage}
+                disabled={!inputMessage.trim() || isLoading}
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: inputMessage.trim() && !isLoading ? colors.primary : colors.gray300,
+                  color: inputMessage.trim() && !isLoading ? colors.white : colors.gray500,
+                  border: 'none',
+                  borderRadius: '50%',
+                  cursor: inputMessage.trim() && !isLoading ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease',
+                  boxShadow: inputMessage.trim() && !isLoading ? '0 4px 12px rgba(255, 121, 0, 0.3)' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (inputMessage.trim() && !isLoading) {
+                    e.target.style.backgroundColor = colors.primaryHover;
+                    e.target.style.transform = 'scale(1.05)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (inputMessage.trim() && !isLoading) {
+                    e.target.style.backgroundColor = colors.primary;
+                    e.target.style.transform = 'scale(1)';
+                  }
+                }}
+              >
+                {isLoading ? (
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid transparent',
+                    borderTop: '2px solid currentColor',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                ) : (
+                  <Send size={20} />
+                )}
+              </button>
+            </div>
           </div>
         </>
       )}
+      
+      {/* CSS Animation */}
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </Card>
   );
 };
