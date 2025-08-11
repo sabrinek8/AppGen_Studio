@@ -68,6 +68,7 @@ class SimpleFrontendEvaluator:
                         'features': features,
                         'generated_files_count': len(generated_project),
                         'evaluation_score': evaluation_score['overall_score'],
+                        'weighted_evaluation_score': evaluation_score.get('weighted_score', evaluation_score['overall_score']),  # New field
                         'code_quality_score': evaluation_score['code_quality'],
                         'requirements_fulfillment': evaluation_score['requirements_fulfillment'],
                         'react_native_web_compliance': evaluation_score['compliance'],
@@ -75,8 +76,9 @@ class SimpleFrontendEvaluator:
                     }
                     results.append(result)
                     
-                    # Log individual test case metrics
+                    # Log individual test case metrics (including weighted score)
                     mlflow.log_metric(f"test_{i}_overall_score", evaluation_score['overall_score'])
+                    mlflow.log_metric(f"test_{i}_weighted_score", evaluation_score.get('weighted_score', evaluation_score['overall_score']))  # New metric
                     mlflow.log_metric(f"test_{i}_code_quality", evaluation_score['code_quality'])
                     mlflow.log_metric(f"test_{i}_requirements", evaluation_score['requirements_fulfillment'])
                     mlflow.log_metric(f"test_{i}_compliance", evaluation_score['compliance'])
@@ -174,155 +176,183 @@ class SimpleFrontendEvaluator:
             return {}
     
     def _llm_judge_evaluation(self, test_case: Dict[str, Any], generated_project: Dict[str, str]) -> Dict[str, Any]:
-        """Use LLM as judge to evaluate the generated project"""
-        
-        if not generated_project:
-            return {
-                "code_quality": 0,
-                "requirements_fulfillment": 0,
-                "compliance": 0,
-                "overall_score": 0,
-                "feedback": "No project generated"
+            """Use LLM as judge to evaluate the generated project with weighted scoring"""
+            
+            # Define weights (must sum to 1.0)
+            WEIGHTS = {
+                "requirements_fulfillment": 0.5,  # 50% weight - most important
+                "code_quality": 0.25,             # 25% weight
+                "compliance": 0.25                # 25% weight
             }
-        
-        # Prepare project content for evaluation (limit size for LLM)
-        project_content = ""
-        file_count = 0
-        for file_path, file_content in generated_project.items():
-            if file_count < 5:  # Limit to first 5 files to avoid token limits
-                project_content += f"\n--- {file_path} ---\n{file_content[:1000]}...\n"
-                file_count += 1
-            else:
-                project_content += f"\n--- {file_path} --- (truncated)\n"
-        
-        evaluation_prompt = f"""
-Evaluate this React Native Web project generation:
-
-USER REQUEST:
-Description: {test_case['description']}
-Features: {test_case.get('features', 'None specified')}
-
-GENERATED PROJECT ({len(generated_project)} files):
-{project_content}
-
-EVALUATION CRITERIA (Score 1-10 each):
-
-1. CODE QUALITY: Clean code, proper structure, correct syntax
-2. REQUIREMENTS FULFILLMENT: Matches user description and features  
-3. REACT NATIVE WEB COMPLIANCE: Proper react-native-web usage
-
-RESPOND ONLY WITH THIS JSON:
-{{
-    "code_quality": <score 1-10>,
-    "requirements_fulfillment": <score 1-10>, 
-    "compliance": <score 1-10>,
-    "overall_score": <average of above>,
-    "feedback": "<brief explanation>"
-}}
-"""
-        
-        try:
-            # Debug: Check available methods
-            available_methods = [method for method in dir(self.llm_judge) if not method.startswith('_')]
-            logger.info(f"Available LLM methods: {available_methods}")
             
-            # Your ClaudeLLM uses call() method with OpenAI chat format
-            logger.info("Attempting to call LLM with messages format...")
-            messages = [{"role": "user", "content": evaluation_prompt}]
-            response = self.llm_judge.call(messages)
-            logger.info(f"LLM call successful, response type: {type(response)}")
+            if not generated_project:
+                return {
+                    "code_quality": 0,
+                    "requirements_fulfillment": 0,
+                    "compliance": 0,
+                    "overall_score": 0,
+                    "weighted_score": 0,
+                    "feedback": "No project generated"
+                }
             
-            if response is None:
-                raise ValueError("LLM returned None response")
+            # Prepare project content for evaluation (limit size for LLM)
+            project_content = ""
+            file_count = 0
+            for file_path, file_content in generated_project.items():
+                if file_count < 5:  # Limit to first 5 files to avoid token limits
+                    project_content += f"\n--- {file_path} ---\n{file_content[:1000]}...\n"
+                    file_count += 1
+                else:
+                    project_content += f"\n--- {file_path} --- (truncated)\n"
             
-            response_str = str(response).strip()
-            logger.info(f"LLM Response: {response_str[:200]}...")  # Log first 200 chars
+            evaluation_prompt = f"""
+    Evaluate this React Native Web project generation:
+
+    USER REQUEST:
+    Description: {test_case['description']}
+    Features: {test_case.get('features', 'None specified')}
+
+    GENERATED PROJECT ({len(generated_project)} files):
+    {project_content}
+
+    EVALUATION CRITERIA (Score 1-10 each):
+
+    1. CODE QUALITY: Clean code, proper structure, correct syntax
+    2. REQUIREMENTS FULFILLMENT: Matches user description and features (MOST IMPORTANT)
+    3. REACT NATIVE WEB COMPLIANCE: Proper react-native-web usage
+
+    RESPOND ONLY WITH THIS JSON:
+    {{
+        "code_quality": <score 1-10>,
+        "requirements_fulfillment": <score 1-10>, 
+        "compliance": <score 1-10>,
+        "overall_score": <simple average of above>,
+        "feedback": "<brief explanation>"
+    }}
+    """
             
-            # Extract JSON from response
-            first_brace = response_str.find("{")
-            last_brace = response_str.rfind("}")
-            if first_brace != -1 and last_brace != -1:
-                json_str = response_str[first_brace:last_brace+1]
-                evaluation = json.loads(json_str)
+            try:
+                # Debug: Check available methods
+                available_methods = [method for method in dir(self.llm_judge) if not method.startswith('_')]
+                logger.info(f"Available LLM methods: {available_methods}")
                 
-                # Ensure all required fields exist and are valid
-                required_fields = ["code_quality", "requirements_fulfillment", "compliance", "overall_score", "feedback"]
-                for field in required_fields:
-                    if field not in evaluation:
-                        if field == "feedback":
-                            evaluation[field] = "No feedback provided"
-                        else:
-                            evaluation[field] = 5  # Default score
+                # Your ClaudeLLM uses call() method with OpenAI chat format
+                logger.info("Attempting to call LLM with messages format...")
+                messages = [{"role": "user", "content": evaluation_prompt}]
+                response = self.llm_judge.call(messages)
+                logger.info(f"LLM call successful, response type: {type(response)}")
                 
-                # Validate numeric scores
-                for field in ["code_quality", "requirements_fulfillment", "compliance", "overall_score"]:
-                    if field in evaluation:
-                        try:
-                            evaluation[field] = float(evaluation[field])
-                            # Ensure score is within valid range
-                            evaluation[field] = max(1, min(10, evaluation[field]))
-                        except (ValueError, TypeError):
-                            evaluation[field] = 5  # Default score
+                if response is None:
+                    raise ValueError("LLM returned None response")
                 
-                # Calculate overall score if not provided or invalid
-                scores = [evaluation["code_quality"], evaluation["requirements_fulfillment"], evaluation["compliance"]]
-                if not isinstance(evaluation["overall_score"], (int, float)) or evaluation["overall_score"] <= 0:
+                response_str = str(response).strip()
+                logger.info(f"LLM Response: {response_str[:200]}...")  # Log first 200 chars
+                
+                # Extract JSON from response
+                first_brace = response_str.find("{")
+                last_brace = response_str.rfind("}")
+                if first_brace != -1 and last_brace != -1:
+                    json_str = response_str[first_brace:last_brace+1]
+                    evaluation = json.loads(json_str)
+                    
+                    # Ensure all required fields exist and are valid
+                    required_fields = ["code_quality", "requirements_fulfillment", "compliance", "overall_score", "feedback"]
+                    for field in required_fields:
+                        if field not in evaluation:
+                            if field == "feedback":
+                                evaluation[field] = "No feedback provided"
+                            else:
+                                evaluation[field] = 5  # Default score
+                    
+                    # Validate numeric scores
+                    for field in ["code_quality", "requirements_fulfillment", "compliance", "overall_score"]:
+                        if field in evaluation:
+                            try:
+                                evaluation[field] = float(evaluation[field])
+                                # Ensure score is within valid range
+                                evaluation[field] = max(1, min(10, evaluation[field]))
+                            except (ValueError, TypeError):
+                                evaluation[field] = 5  # Default score
+                    
+                    # Calculate simple average for overall_score (backward compatibility)
+                    scores = [evaluation["code_quality"], evaluation["requirements_fulfillment"], evaluation["compliance"]]
                     evaluation["overall_score"] = sum(scores) / len(scores)
-                
-                logger.info(f"Parsed evaluation: {evaluation}")
-                return evaluation
-            else:
-                logger.warning(f"No JSON found in response: {response_str}")
-                
-        except Exception as e:
-            logger.error(f"Error in LLM evaluation: {e}")
-            logger.error(f"Available methods on LLM: {[method for method in dir(self.llm_judge) if not method.startswith('_')]}")
-            import traceback
-            logger.error(f"Full traceback: {traceback.format_exc()}")
-        
-        # Fallback evaluation
-        return {
-            "code_quality": 3,
-            "requirements_fulfillment": 3,
-            "compliance": 3,
-            "overall_score": 3,
-            "feedback": f"Evaluation failed, but project generated with {len(generated_project)} files"
-        }
-    
-    def _calculate_overall_metrics(self, results: List[Dict[str, Any]]) -> Dict[str, float]:
-        """Calculate overall performance metrics"""
-        if not results:
-            return {}
-        
-        total_cases = len(results)
-        successful_cases = [r for r in results if r['evaluation_score'] > 0]
-        
-        if not successful_cases:
+                    
+                    # Calculate NEW weighted score
+                    weighted_score = (
+                        evaluation["requirements_fulfillment"] * WEIGHTS["requirements_fulfillment"] +
+                        evaluation["code_quality"] * WEIGHTS["code_quality"] +
+                        evaluation["compliance"] * WEIGHTS["compliance"]
+                    )
+                    evaluation["weighted_score"] = round(weighted_score, 2)
+                    
+                    logger.info(f"Parsed evaluation - Overall: {evaluation['overall_score']:.2f}, Weighted: {evaluation['weighted_score']:.2f}")
+                    return evaluation
+                else:
+                    logger.warning(f"No JSON found in response: {response_str}")
+                    
+            except Exception as e:
+                logger.error(f"Error in LLM evaluation: {e}")
+                logger.error(f"Available methods on LLM: {[method for method in dir(self.llm_judge) if not method.startswith('_')]}")
+                import traceback
+                logger.error(f"Full traceback: {traceback.format_exc()}")
+            
+            # Fallback evaluation
             return {
-                'total_test_cases': total_cases,
-                'successful_cases': 0,
-                'failure_rate': 1.0,
-                'avg_overall_score': 0,
-                'avg_code_quality': 0,
-                'avg_requirements_fulfillment': 0,
-                'avg_compliance': 0,
-                'success_rate': 0,
-                'generated_files_avg': 0
+                "code_quality": 3,
+                "requirements_fulfillment": 3,
+                "compliance": 3,
+                "overall_score": 3,
+                "weighted_score": 3,
+                "feedback": f"Evaluation failed, but project generated with {len(generated_project)} files"
             }
         
-        metrics = {
-            'total_test_cases': total_cases,
-            'successful_cases': len(successful_cases),
-            'failure_rate': (total_cases - len(successful_cases)) / total_cases,
-            'avg_overall_score': sum(r['evaluation_score'] for r in successful_cases) / len(successful_cases),
-            'avg_code_quality': sum(r['code_quality_score'] for r in successful_cases) / len(successful_cases),
-            'avg_requirements_fulfillment': sum(r['requirements_fulfillment'] for r in successful_cases) / len(successful_cases),
-            'avg_compliance': sum(r['react_native_web_compliance'] for r in successful_cases) / len(successful_cases),
-            'success_rate': sum(1 for r in successful_cases if r['evaluation_score'] >= 7) / len(successful_cases),
-            'generated_files_avg': sum(r['generated_files_count'] for r in results) / total_cases
-        }
-        
-        return metrics
+    def _calculate_overall_metrics(self, results: List[Dict[str, Any]]) -> Dict[str, float]:
+            """Calculate overall performance metrics with weighted scoring"""
+            if not results:
+                return {}
+            
+            total_cases = len(results)
+            successful_cases = [r for r in results if r['evaluation_score'] > 0]
+            
+            if not successful_cases:
+                return {
+                    'total_test_cases': total_cases,
+                    'successful_cases': 0,
+                    'failure_rate': 1.0,
+                    'avg_overall_score': 0,
+                    'avg_weighted_score': 0,  # New metric
+                    'avg_code_quality': 0,
+                    'avg_requirements_fulfillment': 0,
+                    'avg_compliance': 0,
+                    'success_rate': 0,
+                    'weighted_success_rate': 0,  # New metric
+                    'generated_files_avg': 0
+                }
+            
+            # Calculate weighted scores (use weighted_score if available, fall back to overall_score)
+            weighted_scores = []
+            for r in successful_cases:
+                if 'weighted_score' in r and r['weighted_score'] > 0:
+                    weighted_scores.append(r['weighted_score'])
+                else:
+                    weighted_scores.append(r['evaluation_score'])
+            
+            metrics = {
+                'total_test_cases': total_cases,
+                'successful_cases': len(successful_cases),
+                'failure_rate': (total_cases - len(successful_cases)) / total_cases,
+                'avg_overall_score': sum(r['evaluation_score'] for r in successful_cases) / len(successful_cases),
+                'avg_weighted_score': sum(weighted_scores) / len(weighted_scores),  # New weighted average
+                'avg_code_quality': sum(r['code_quality_score'] for r in successful_cases) / len(successful_cases),
+                'avg_requirements_fulfillment': sum(r['requirements_fulfillment'] for r in successful_cases) / len(successful_cases),
+                'avg_compliance': sum(r['react_native_web_compliance'] for r in successful_cases) / len(successful_cases),
+                'success_rate': sum(1 for r in successful_cases if r['evaluation_score'] >= 7) / len(successful_cases),
+                'weighted_success_rate': sum(1 for score in weighted_scores if score >= 7) / len(weighted_scores),  # New weighted success rate
+                'generated_files_avg': sum(r['generated_files_count'] for r in results) / total_cases
+            }
+            
+            return metrics
     
     def _save_results_as_artifact(self, results: List[Dict[str, Any]]):
         """Save evaluation results as MLflow artifact"""
@@ -357,7 +387,6 @@ SIMPLE_TEST_CASES = [
     }
 ]
 
-# Simple usage function
 def run_simple_evaluation():
     """Run evaluation with simple test cases"""
     evaluator = SimpleFrontendEvaluator()
@@ -368,9 +397,14 @@ def run_simple_evaluation():
         metrics = results['overall_metrics']
         print(f"Total Test Cases: {metrics.get('total_test_cases', 0)}")
         print(f"Successful Cases: {metrics.get('successful_cases', 0)}")
-        print(f"Overall Score: {metrics.get('avg_overall_score', 0):.2f}/10")
-        print(f"Success Rate: {metrics.get('success_rate', 0):.2%}")
-        print(f"Code Quality: {metrics.get('avg_code_quality', 0):.2f}/10")
+        print(f"Overall Score (Simple Avg): {metrics.get('avg_overall_score', 0):.2f}/10")
+        print(f"Weighted Score (Req 50%): {metrics.get('avg_weighted_score', 0):.2f}/10")  
+        print(f"Success Rate (Simple): {metrics.get('success_rate', 0):.2%}")
+        print(f"Success Rate (Weighted): {metrics.get('weighted_success_rate', 0):.2%}")  
+        print("---")
+        print(f"Requirements Score: {metrics.get('avg_requirements_fulfillment', 0):.2f}/10 (Weight: 50%)")
+        print(f"Code Quality Score: {metrics.get('avg_code_quality', 0):.2f}/10 (Weight: 25%)")
+        print(f"Compliance Score: {metrics.get('avg_compliance', 0):.2f}/10 (Weight: 25%)")
     else:
         print("No metrics available")
     

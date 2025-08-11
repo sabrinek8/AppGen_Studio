@@ -143,13 +143,14 @@ async def generate_react_project(request: ProjectRequest) -> ProjectResponse:
                 "files": project_data,
                 "evaluation": {
                     "overall_score": evaluation_result["overall_score"],
+                    "weighted_score": evaluation_result.get("weighted_score", evaluation_result["overall_score"]),  # New field
                     "code_quality": evaluation_result["code_quality"],
                     "requirements_fulfillment": evaluation_result["requirements_fulfillment"],
                     "compliance": evaluation_result["compliance"],
-                    "feedback": evaluation_result["feedback"]
+                    "feedback": evaluation_result["feedback"],
+                    "weights_info": "Requirements: 50%, Code Quality: 25%, Compliance: 25%"  # Info for users
                 }
             }
-            
         except Exception as eval_error:
             logger.error(f"Evaluation failed, but project generation succeeded: {eval_error}")
             # Still return the project even if evaluation fails

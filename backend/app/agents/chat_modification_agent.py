@@ -3,8 +3,8 @@ from app.core.ClaudeLLM import ClaudeLLM
 from typing import Dict, Any
 from app.core.OpenaiLLM import OpenaiLLM
 
-#llm_claude = ClaudeLLM()
-llm_gpt=OpenaiLLM()
+llm_claude = ClaudeLLM()
+#llm_gpt=OpenaiLLM()
 
 chat_modification_agent = Agent(
     role="React Native Web Project Modifier",
@@ -12,7 +12,7 @@ chat_modification_agent = Agent(
     backstory="Expert en modification de code React Native Web, spécialisé dans l'ajustement des styles, couleurs, thèmes, et fonctionnalités selon les demandes conversationnelles.",
     verbose=False,
     allow_delegation=False,
-    llm=llm_gpt
+    llm=llm_claude
 )
 
 def create_modification_task(user_message: str, current_project: Dict[str, str]) -> Task:
