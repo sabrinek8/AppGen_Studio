@@ -774,22 +774,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
 
-- **Orange** for the beautiful Boosted design system
-- **CrewAI** for powerful AI agent orchestration
-- **MLflow** for comprehensive experiment tracking
-- **Sandpack** for the amazing code editor experience
-
----
-
-<div align="center">
-
-**Made with ❤️ by the AppGen Studio Team**
-
-[⭐ Star this repository](https://github.com/your-repo/appgen-studio) if you found it helpful!
-
-</div>
 
 
 ## 🙏 Acknowledgments
