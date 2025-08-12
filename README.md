@@ -405,7 +405,7 @@ cd frontend && npm test
 
 <div align="center">
 
-**Made with ❤️ by me*
+**Made with ❤️ by me**
 
 [⭐ Star this repository](https://github.com/your-repo/appgen-studio) if you found it helpful!
 
