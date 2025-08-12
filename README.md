@@ -53,55 +53,51 @@ AppGen Studio is a comprehensive full-stack application that revolutionizes Reac
 
 ```mermaid
 graph TB
-    subgraph "Frontend (React)"
-        A[React Native Web<br/>Code Generator] 
-        B[Live Editor<br/>Preview]
-        C[Chatbot]
-        D[Project Management<br/>Features]
-    end
-    
-    subgraph "Backend (FastAPI)"
-        E[Routes API]
-        F[Services Logic]
-        G[CrewAI Agents]
-        H[Evaluation]
-        
-        subgraph "CrewAI Agents"
-            I[Frontend<br/>Generator]
-            J[Frontend<br/>Optimizer]
-        end
-    end
-    
-    subgraph "LLM Proxy Orange"
-        K[Vertex AI<br/>claude-sonnet-3.7]
-        L[OpenAI<br/>GPT-4]
-    end
-    
-    subgraph "MLflow"
-        M[Metrics and LLM feedback<br/>visualization]
-    end
-    
-    A --> E
-    B --> E
-    C --> E
-    D --> E
-    
-    E --> F
-    F --> G
-    G --> K
-    G --> L
-    
-    H --> M
-    
-    style A fill:#FFF2E6
-    style B fill:#FFF2E6
-    style C fill:#FFF2E6
-    style D fill:#FFF2E6
-    style I fill:#FFE6E6
-    style J fill:#FFE6E6
-    style K fill:#FFE6FF
-    style L fill:#FFE6FF
-    style M fill:#E6F3FF
+   subgraph "Frontend (React)"
+       A[React Native Web<br/>Code Generator] 
+       B[Live Editor<br/>Preview]
+       C[Chatbot]
+       D[Project Management<br/>Features]
+   end
+   
+   subgraph "Backend (FastAPI)"
+       E[Routes API]
+       F[Services Logic]
+       G[CrewAI Agents<br/>├ Frontend Generator<br/>└ Frontend Optimizer]
+       H[Evaluation]
+   end
+   
+   subgraph "LLM Proxy Orange"
+       K[Vertex AI<br/>claude-sonnet-3.7]
+       L[OpenAI<br/>GPT-4]
+   end
+   
+   subgraph "MLflow"
+       M[Metrics and LLM feedback<br/>visualization]
+   end
+   
+   A --> E
+   B --> E
+   C --> E
+   D --> E
+   
+   E --> F
+   F --> G
+   G --> K
+   G --> L
+   
+   F --> H
+   H --> M
+   H --> G
+   
+   style A fill:#FFF2E6
+   style B fill:#FFF2E6
+   style C fill:#FFF2E6
+   style D fill:#FFF2E6
+   style G fill:#FFE6E6
+   style K fill:#FFE6FF
+   style L fill:#FFE6FF
+   style M fill:#E6F3FF
 ```
 
 ### 🧩 Technology Stack
