@@ -1,5 +1,5 @@
 # AppGen Studio - AI-Powered React Native Web Generator
-
+![Banner](./assets/main.png)
 <div align="center">
 
 ![AppGen Studio Logo](https://img.shields.io/badge/AppGen-Studio-FF7900?style=for-the-badge&logo=react)
