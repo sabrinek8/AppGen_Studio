@@ -10,6 +10,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![CrewAI](https://img.shields.io/badge/CrewAI-Powered-9C27B0?style=flat)](https://crewai.com/)
 [![MLflow](https://img.shields.io/badge/MLflow-Tracking-0194E2?style=flat&logo=mlflow)](https://mlflow.org/)
+[![Poetry](https://img.shields.io/badge/Poetry-Dependency%20Management-60A5FA?style=flat&logo=python)](https://python-poetry.org/)
 
 [🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🎯 Features](#-features) • [🏗️ Architecture](#-architecture)
 
@@ -121,6 +122,7 @@ graph TB
 | **CrewAI** | AI Orchestration | Latest |
 | **MLflow** | Experiment Tracking | Latest |
 | **PyPDF2** | PDF Processing | Latest |
+| **Poetry** | Dependency Management | Latest |
 
 #### AI & ML
 | Provider | Model | Usage |
@@ -136,19 +138,27 @@ graph TB
 ### Prerequisites
 - **Node.js** 16+ and npm/yarn
 - **Python** 3.11+
+- **Poetry** (for Python dependency management)
 - **Docker** (optional)
 - API keys for your preferred LLM provider
 
 ### 1️⃣ Clone & Setup
 ```bash
 git clone <repository-url>
-cd appgen-studio
+cd Appgen-studio
 ```
 
 ### 2️⃣ Backend Configuration
+
+#### Using Poetry (Recommended)
 ```bash
 cd backend
-pip install -r requirements.txt
+
+# Install Poetry if you haven't already
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install dependencies
+poetry install
 
 # Create .env file
 cat > .env << EOF
@@ -157,6 +167,17 @@ BASE_URL=your_llm_base_url
 GITHUB_TOKEN=your_github_token (optional)
 MLFLOW_TRACKING_URI=http://localhost:5000
 EOF
+
+# Start backend with Poetry
+poetry run uvicorn app.main:app --reload
+```
+
+#### Alternative: Using pip
+```bash
+cd backend
+pip install -r requirements.txt
+
+# Create .env file (same as above)
 
 # Start backend
 uvicorn app.main:app --reload
@@ -172,7 +193,13 @@ npm start
 ### 4️⃣ MLflow Dashboard (Optional)
 ```bash
 cd backend
+
+# Using Poetry
+poetry run ./setup_mlflow.sh
+
+# Or using standard Python
 ./setup_mlflow.sh
+
 # MLflow UI available at http://localhost:5000
 ```
 
@@ -278,8 +305,6 @@ BASE_URL=your_llm_base_url
 # Optional
 GITHUB_TOKEN=github_token_for_models
 MLFLOW_TRACKING_URI=http://localhost:5000
-LOG_LEVEL=INFO
-MAX_PDF_SIZE=10485760  # 10MB
 ```
 
 ### Docker Deployment
@@ -294,16 +319,6 @@ docker run -p 8000:8000 --env-file .env appgen-backend
 cd frontend
 npm run build
 npx serve -s build -l 3000
-```
-
-### Production Setup
-
-```bash
-# Backend with Gunicorn
-gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-
-# Frontend build
-npm run build
 ```
 
 ---
@@ -350,8 +365,20 @@ window.location.reload();
 
 **🔴 "MLflow connection issues"**
 ```bash
-# Restart MLflow server
+# Using Poetry
+poetry run mlflow server --host 127.0.0.1 --port 5000
+
+# Using pip
 mlflow server --host 127.0.0.1 --port 5000
+```
+
+**🔴 "Poetry not found"**
+```bash
+# Install Poetry
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Add Poetry to PATH (add to your shell profile)
+export PATH="$HOME/.local/bin:$PATH"
 ```
 
 ---
@@ -368,12 +395,15 @@ We welcome contributions! Please follow these guidelines:
 
 ### Development Setup
 ```bash
-# Install pre-commit hooks
-pip install pre-commit
-pre-commit install
+# Install pre-commit hooks (using Poetry)
+cd backend
+poetry install --with dev
+poetry run pre-commit install
 
 # Run tests
-cd backend && python -m pytest
+poetry run python -m pytest
+
+# Frontend tests
 cd frontend && npm test
 ```
 
@@ -385,15 +415,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-
-
-
 ## 🙏 Acknowledgments
 
 - **Orange** for the beautiful Boosted design system
 - **CrewAI** for powerful AI agent orchestration
 - **MLflow** for comprehensive experiment tracking
 - **Sandpack** for the amazing code editor experience
+- **Poetry** for elegant Python dependency management
 
 ---
 
