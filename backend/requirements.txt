@@ -1,8 +1,9 @@
-fastapi
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-crewai==0.28.8
-python-multipart==0.0.6
-requests==2.31.0
+azure_storage==0.37.0
+crewai==0.165.1
+fastapi==0.116.1
+mlflow==3.1.4
+mlflow_skinny==3.1.4
+openai==1.100.1
+pydantic==2.11.7
 PyPDF2==3.0.1
-mlflow==2.8.1
+python-dotenv==1.1.1

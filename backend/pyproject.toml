@@ -1,0 +1,45 @@
+[project]
+name = "appgen-studio"
+version = "0.1.0"
+description = "A FastAPI application with MLflow and CrewAI integration"
+authors = [
+    {name = "sabrine.kamoun@etudiant-fst.utm.tn"}
+]
+readme = "README.md"
+requires-python =">=3.13,<3.14"
+dependencies = [
+    "azure-storage-blob>=12.0.0",
+    "azure-storage-file-share>=12.0.0",
+    "azure-storage-queue>=12.0.0",
+     "azure-ai-inference==1.0.0b9",
+    "azure-identity>=1.17.0",
+    "azure-core>=1.30.0",
+    "crewai==0.165.1",
+    "fastapi==0.116.1",
+    "mlflow==3.1.4",
+    "mlflow-skinny==3.1.4",
+     "openai<1.100.0",
+    "pydantic==2.11.7",
+    "PyPDF2==3.0.1",
+    "python-dotenv==1.1.1",
+    "python-multipart (>=0.0.20,<0.0.21)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+package-mode = false
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

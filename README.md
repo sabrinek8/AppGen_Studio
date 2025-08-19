@@ -401,6 +401,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ by me**
 
-[⭐ Star this repository](https://github.com/your-repo/appgen-studio) if you found it helpful!
+[⭐ Star this repository](https://github.com/sabrinek8/AppGen_Studio) if you found it helpful!
 
 </div>
