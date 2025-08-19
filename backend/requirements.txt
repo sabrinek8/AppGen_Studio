@@ -1,9 +1,14 @@
-azure_storage==0.37.0
+azure-storage-blob>=12.0.0
+azure-storage-file-share>=12.0.0
+azure-storage-queue>=12.0.0
+azure-storage-file-datalake>=12.0.0
+azure-ai-inference==1.0.0b9
 crewai==0.165.1
 fastapi==0.116.1
 mlflow==3.1.4
 mlflow_skinny==3.1.4
-openai==1.100.1
+openai<1.100.0
 pydantic==2.11.7
 PyPDF2==3.0.1
 python-dotenv==1.1.1
+python-multipart==0.0.6
