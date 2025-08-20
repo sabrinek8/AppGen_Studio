@@ -4,6 +4,7 @@ import { githubLight } from "@codesandbox/sandpack-themes";
 import { Card, SectionHeader } from '../UI';
 import { ChatInterface } from './ChatInterface';
 import { Columns2, MessageCircle, Code, Layout } from 'lucide-react';
+import { useTranslation } from '../../contexts/TranslationContext';
 
 export const PreviewSection = ({ 
   currentProject, 
@@ -11,6 +12,7 @@ export const PreviewSection = ({
   projectId,
   onProjectUpdate 
 }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('preview');
 
   const TabButton = ({ id, icon, label, isActive, onClick }) => (
@@ -53,8 +55,8 @@ export const PreviewSection = ({
       <div style={{ padding: '30px 30px 0 30px' }}>
         <SectionHeader
           icon={<Layout size={24} />}
-          title="Projet Interactif"
-          subtitle="Aperçu et modification en temps réel avec l'assistant IA"
+          title={t('previewTitle')}
+          subtitle={t('previewSubtitle')}
         />
         
         <div style={{
@@ -65,14 +67,14 @@ export const PreviewSection = ({
           <TabButton
             id="preview"
             icon={<Code size={16} />}
-            label="Éditeur de Code"
+            label={t('codeEditor')}
             isActive={activeTab === 'preview'}
             onClick={setActiveTab}
           />
           <TabButton
             id="chat"
             icon={<MessageCircle size={16} />}
-            label="Assistant IA"
+            label={t('aiAssistant')}
             isActive={activeTab === 'chat'}
             onClick={setActiveTab}
           />
@@ -140,7 +142,7 @@ export const PreviewSection = ({
         }}>
           <MessageCircle size={16} />
           <span>
-            💡 <strong>Astuce :</strong> Passez à l'onglet "Assistant IA" pour modifier votre projet en parlant naturellement !
+            {t('previewTip')}
           </span>
         </div>
       )}

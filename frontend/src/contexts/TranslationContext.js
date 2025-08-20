@@ -113,6 +113,8 @@ const translations = {
     connectionError: '❌ Erreur de connexion. Vérifiez que le serveur backend fonctionne.',
     errorOccurred: 'Une erreur est survenue',
     clearHistoryError: 'Erreur lors de l\'effacement de l\'historique.',
+    zipFallbackMessage: 'Erreur ZIP, utilisation du fallback:',
+    unableToStoreProject: 'Impossible de stocker le projet importé pour le chat:',
     
     // Warning Messages
     projectImportedChatWarning: 'Projet importé mais impossible de l\'associer au chat.',
@@ -123,6 +125,13 @@ const translations = {
     // Confirmation Messages
     resetConfirmation: 'Êtes-vous sûr de vouloir réinitialiser le projet ?',
     clearChatConfirmation: 'Êtes-vous sûr de vouloir effacer l\'historique de chat pour ce projet ?',
+    
+    // Console Messages
+    generationErrorConsole: 'Erreur lors de la génération:',
+    exportDataConsole: 'Données du projet à exporter:',
+    fileCountConsole: 'Nombre de fichiers:',
+    exportErrorConsole: 'Erreur lors de l\'export:',
+    clearErrorConsole: 'Erreur lors de l\'effacement:',
     
     // File Upload
     fileAlreadyAdded: 'Ce fichier a déjà été ajouté.',
@@ -250,6 +259,8 @@ const translations = {
     connectionError: '❌ Connection error. Check that the backend server is running.',
     errorOccurred: 'An error occurred',
     clearHistoryError: 'Error clearing history.',
+    zipFallbackMessage: 'ZIP error, using fallback:',
+    unableToStoreProject: 'Unable to store imported project for chat:',
     
     // Warning Messages
     projectImportedChatWarning: 'Project imported but unable to associate with chat.',
@@ -260,6 +271,13 @@ const translations = {
     // Confirmation Messages
     resetConfirmation: 'Are you sure you want to reset the project?',
     clearChatConfirmation: 'Are you sure you want to clear chat history for this project?',
+    
+    // Console Messages
+    generationErrorConsole: 'Generation error:',
+    exportDataConsole: 'Project data to export:',
+    fileCountConsole: 'Number of files:',
+    exportErrorConsole: 'Export error:',
+    clearErrorConsole: 'Clear error:',
     
     // File Upload
     fileAlreadyAdded: 'This file has already been added.',
@@ -387,6 +405,8 @@ const translations = {
     connectionError: '❌ Error de conexión. Verifica que el servidor backend esté funcionando.',
     errorOccurred: 'Ocurrió un error',
     clearHistoryError: 'Error limpiando historial.',
+    zipFallbackMessage: 'Error ZIP, usando fallback:',
+    unableToStoreProject: 'No se puede almacenar el proyecto importado para chat:',
     
     // Warning Messages
     projectImportedChatWarning: 'Proyecto importado pero no se pudo asociar con chat.',
@@ -397,6 +417,13 @@ const translations = {
     // Confirmation Messages
     resetConfirmation: '¿Estás seguro de que quieres resetear el proyecto?',
     clearChatConfirmation: '¿Estás seguro de que quieres limpiar el historial de chat para este proyecto?',
+    
+    // Console Messages
+    generationErrorConsole: 'Error de generación:',
+    exportDataConsole: 'Datos del proyecto a exportar:',
+    fileCountConsole: 'Número de archivos:',
+    exportErrorConsole: 'Error de exportación:',
+    clearErrorConsole: 'Error de limpieza:',
     
     // File Upload
     fileAlreadyAdded: 'Este archivo ya ha sido añadido.',

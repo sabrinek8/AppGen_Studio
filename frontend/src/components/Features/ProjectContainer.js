@@ -2,6 +2,7 @@ import React from 'react';
 import { useProject, useProjectGenerator, useNavigation, useFileHandler, useProjectChat } from '../../hooks';
 import { useFileUpload } from '../../hooks/useFileUpload';
 import { useAlerts } from '../../hooks/useAlerts';
+import { useTranslation } from '../../contexts/TranslationContext';
 import { exportProjectAsZip, exportProjectAsZipSimple } from '../../utils/zipExport';
 import { clearAllChatData, clearProjectChatHistory } from '../../utils/chatUtils';
 import { GeneratorSection } from './GeneratorSection';
@@ -10,6 +11,8 @@ import { ManagementSection } from './ManagementSection';
 import { AlertContainer } from '../UI/AlertContainer';
 
 export const ProjectContainer = () => {
+  const { t } = useTranslation();
+  
   const { 
     alerts,
     showSuccess,
@@ -72,10 +75,10 @@ export const ProjectContainer = () => {
       }
       
       navigateTo('preview');
-      showSuccess('Projet généré avec succès ! ');
+      showSuccess(t('projectGenerated'));
     } catch (error) {
-      console.error('Erreur lors de la génération:', error);
-      showError(`Erreur lors de la génération : ${error.message}`);
+      console.error(t('generationErrorConsole'), error);
+      showError(`${t('generationError')} ${error.message}`);
     }
   };
 
@@ -93,12 +96,12 @@ export const ProjectContainer = () => {
       try {
         await storeProject(projectData);
       } catch (error) {
-        console.warn('Impossible de stocker le projet importé pour le chat:', error);
-        showWarning('Projet importé mais impossible de l\'associer au chat.');
+        console.warn(t('unableToStoreProject'), error);
+        showWarning(t('projectImportedChatWarning'));
       }
       
       navigateTo('preview');
-      showSuccess('Projet importé avec succès !');
+      showSuccess(t('projectImported'));
     } catch (error) {
       showError(error.message);
     }
@@ -107,28 +110,28 @@ export const ProjectContainer = () => {
   const handleExportZip = async (projectData) => {
     try {
       if (!projectData || Object.keys(projectData).length === 0) {
-        showWarning('Aucun projet à exporter. Veuillez d\'abord générer ou importer un projet.');
+        showWarning(t('noProjectToExport'));
         return;
       }
       
-      console.log('Données du projet à exporter:', projectData);
-      console.log('Nombre de fichiers:', Object.keys(projectData).length);
+      console.log(t('exportDataConsole'), projectData);
+      console.log(t('fileCountConsole'), Object.keys(projectData).length);
       
       const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-T]/g, '');
       const projectName = `react-project-${timestamp}`;
       
       try {
         await exportProjectAsZip(projectData, projectName);
-        showSuccess('Fichiers téléchargés avec succès ! 🎉');
+        showSuccess(t('filesDownloaded'));
       } catch (zipError) {
-        console.log('Erreur ZIP, utilisation du fallback:', zipError.message);
+        console.log(t('zipFallbackMessage'), zipError.message);
         exportProjectAsZipSimple(projectData, projectName);
-        showInfo('Tous les fichiers ont été téléchargés individuellement.');
+        showInfo(t('filesDownloadedIndividually'));
       }
       
     } catch (error) {
-      console.error('Erreur lors de l\'export:', error);
-      showError('Erreur lors de l\'export du projet: ' + error.message);
+      console.error(t('exportErrorConsole'), error);
+      showError(t('exportError') + error.message);
     }
   };
 
@@ -140,15 +143,15 @@ export const ProjectContainer = () => {
       resetChatProject();
       clearAllChatData(); // Clear all chat data from localStorage
       navigateTo('generator');
-      showInfo('Projet réinitialisé avec succès.');
+      showInfo(t('projectReset'));
     } else {
-      showError('Erreur lors de la réinitialisation du projet.');
+      showError(t('resetError'));
     }
   };
 
   const handleClearChatHistory = () => {
     if (!currentProjectId) {
-      showWarning("Aucun projet actif pour effacer l'historique de chat.");
+      showWarning(t('noActiveProjectChat'));
       return;
     }
     
@@ -156,17 +159,17 @@ export const ProjectContainer = () => {
     const confirmClear = () => {
       try {
         clearProjectChatHistory(currentProjectId);
-        showSuccess("Historique de chat effacé avec succès !");
+        showSuccess(t('chatHistoryCleared'));
         // Force reload of the page to refresh the chat interface
         setTimeout(() => window.location.reload(), 1500);
       } catch (error) {
-        console.error('Erreur lors de l\'effacement:', error);
-        showError("Erreur lors de l'effacement de l'historique.");
+        console.error(t('clearErrorConsole'), error);
+        showError(t('clearHistoryError'));
       }
     };
 
     // You might want to implement a proper modal here instead
-    if (window.confirm("Êtes-vous sûr de vouloir effacer l'historique de chat pour ce projet ?")) {
+    if (window.confirm(t('clearChatConfirmation'))) {
       confirmClear();
     }
   };

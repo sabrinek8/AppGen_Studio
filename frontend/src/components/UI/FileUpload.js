@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../../contexts/TranslationContext';
 
 export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) => {
   const [dragActive, setDragActive] = useState(false);
+  const { t } = useTranslation();
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
     const maxSizeForOthers = 5 * 1024 * 1024; // 5MB
     
     if (!allowedTypes.includes(file.type) && !file.name.match(/\.(txt|js|jsx|ts|tsx|css|html|json|md|xml|pdf)$/i)) {
-      alert('Format de fichier non supporté. Formats acceptés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml, .pdf');
+      alert(t('unsupportedFormat'));
       return false;
     }
     
@@ -50,7 +52,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
     const currentMaxSize = isPDF ? maxSizeForPdf : maxSizeForOthers;
     
     if (file.size > currentMaxSize) {
-      alert(`Fichier trop volumineux. Taille maximale : ${isPDF ? '10MB' : '5MB'}`);
+      alert(t('fileTooLarge') + (isPDF ? '10MB' : '5MB'));
       return false;
     }
     
@@ -84,10 +86,10 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
   };
 
   return (
- <div className="mb-3">
-  <label htmlFor="referenceFiles" className="form-label">
-    📎 Fichiers de référence (optionnel)
-  </label>
+    <div className="mb-3">
+      <label htmlFor="referenceFiles" className="form-label">
+        📎 {t('referenceFiles')}
+      </label>
       
       <div
         onDrop={handleDrop}
@@ -125,14 +127,14 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
             color: '#f16e00',
             fontWeight: '600'
           }}>
-            Glissez-déposez vos fichiers ici ou cliquez pour sélectionner
+            {t('dragDropText')}
           </p>
           <p style={{
             margin: 0,
             color: '#7f8c8d',
             fontSize: '14px'
           }}>
-            Formats supportés : .txt, .js, .jsx, .ts, .tsx, .css, .html, .json, .md, .xml , .pdf (max 10MB)
+            {t('supportedFormats')}
           </p>
         </label>
       </div>
@@ -151,7 +153,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
             fontSize: '14px',
             fontWeight: '600'
           }}>
-            Fichiers sélectionnés ({selectedFiles.length})
+            {t('filesSelected')} ({selectedFiles.length})
           </h4>
           
           <div style={{
@@ -208,7 +210,7 @@ export const FileUpload = ({ onFileSelect, onFileRemove, selectedFiles = [] }) =
                     borderRadius: '4px',
                     fontSize: '16px'
                   }}
-                  title="Supprimer le fichier"
+                  title={t('removeFile')}
                 >
                   ❌
                 </button>

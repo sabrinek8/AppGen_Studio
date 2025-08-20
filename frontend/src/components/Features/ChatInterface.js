@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, SectionHeader } from '../UI';
 import { MessageCircle, Send, Loader, Sparkles } from 'lucide-react';
 import { usePersistentState } from '../../hooks/usePersistentState';
+import { useTranslation } from '../../contexts/TranslationContext';
 
 export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
+  const { t } = useTranslation();
   const [messages, setMessages] = usePersistentState(`chat_messages_${projectId}`, []);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -36,16 +38,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
     gray900: '#000000',
   };
 
-  const quickSuggestions = [
-    "Change la couleur de fond en bleu",
-    "Ajoute un logo avec une icône 🚀",
-    "Met un thème sombre",
-    "Change la taille des boutons",
-    "Ajoute une animation",
-    "Modifie la typographie",
-    "Ajoute des ombres et effets",
-    "Change l'espacement des éléments"
-  ];
+  const quickSuggestions = t('suggestions');
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -106,7 +99,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
         }
       }
     } catch (error) {
-      console.error('Erreur lors du chargement de l\'historique:', error);
+      console.error(t('fileReadError'), error);
     }
   };
 
@@ -156,17 +149,17 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
       } else {
         const errorMessage = {
           role: 'assistant',
-          content: `❌ ${data.message || 'Une erreur est survenue'}`,
+          content: `❌ ${data.message || t('errorOccurred')}`,
           timestamp: new Date().toISOString()
         };
         const finalMessages = [...updatedMessages, errorMessage];
         setMessages(finalMessages);
       }
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message:', error);
+      console.error(t('fileReadError'), error);
       const errorMessage = {
         role: 'assistant',
-        content: '❌ Erreur de connexion. Vérifiez que le serveur backend fonctionne.',
+        content: t('connectionError'),
         timestamp: new Date().toISOString()
       };
       const finalMessages = [...updatedMessages, errorMessage];
@@ -220,8 +213,8 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
     }}>
       <SectionHeader
         icon={<MessageCircle size={24} />}
-        title="Assistant IA"
-        subtitle="Discutez avec l'IA pour modifier votre projet en temps réel"
+        title={t('chatTitle')}
+        subtitle={t('chatSubtitle')}
       />
 
       {!projectId ? (
@@ -253,14 +246,14 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
             color: colors.gray700,
             fontWeight: '600'
           }}>
-            Générez d'abord un projet
+            {t('generateFirstProject')}
           </h3>
           <p style={{ 
             fontSize: '14px', 
             color: colors.gray500,
             lineHeight: '1.5'
           }}>
-            L'assistant IA sera disponible après la génération de votre projet
+            {t('aiAvailableAfter')}
           </p>
         </div>
       ) : (
@@ -298,7 +291,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   color: colors.gray700,
                   fontWeight: '600'
                 }}>
-                  👋 Bonjour ! Je suis votre assistant IA.
+                  {t('greeting')}
                 </h4>
                 <p style={{ 
                   fontSize: '14px', 
@@ -306,7 +299,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   color: colors.gray600,
                   lineHeight: '1.5'
                 }}>
-                  Décrivez-moi les modifications que vous souhaitez apporter à votre projet :
+                  {t('chatDescription')}
                 </p>
                 
                 {/* Animated Quick Suggestions */}
@@ -320,7 +313,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                     alignItems: 'center',
                     gap: '6px'
                   }}>
-                    💡 Suggestions rapides :
+                    {t('quickSuggestions')}
                   </p>
                   <div style={{
                     height: '200px', // Fixed height for 3 suggestions
@@ -510,7 +503,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                     color: colors.gray600,
                     fontWeight: '500'
                   }}>
-                    L'assistant Orange travaille sur votre demande...
+                    {t('orangeWorking')}
                   </span>
                 </div>
               </div>
@@ -536,7 +529,7 @@ export const ChatInterface = ({ projectId, onProjectUpdate, isVisible }) => {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Décrivez la modification souhaitée... (Entrée pour envoyer)"
+                  placeholder={t('chatPlaceholder')}
                   disabled={isLoading}
                   style={{
                     width: '100%',

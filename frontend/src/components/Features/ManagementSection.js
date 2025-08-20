@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ManagementCard } from '../UI';
 import { FolderOpen, Save, RotateCcw, Archive, MessageSquare, Trash2, Settings, Database } from 'lucide-react';
 import { exportChatHistory } from '../../utils/chatUtils';
+import { useTranslation } from '../../contexts/TranslationContext';
 
 export const ManagementSection = ({
   onImport,
@@ -12,6 +13,7 @@ export const ManagementSection = ({
   currentProject,
   currentProjectId
 }) => {
+  const { t } = useTranslation();
   const [alert, setAlert] = useState(null); // { type: 'success' | 'danger' | 'info', message: string }
 
   const handleImportFile = (event) => {
@@ -25,14 +27,14 @@ export const ManagementSection = ({
     if (!currentProject || Object.keys(currentProject).length === 0) {
       setAlert({
         type: 'danger',
-        message: "Aucun projet à exporter. Veuillez d'abord générer ou importer un projet."
+        message: t('noProjectToExport')
       });
       return;
     }
     onExportZip(currentProject);
     setAlert({
       type: 'success',
-      message: "Projet exporté en ZIP avec succès."
+      message: t('projectExportedZIP')
     });
   };
 
@@ -40,7 +42,7 @@ export const ManagementSection = ({
     if (!currentProjectId) {
       setAlert({
         type: 'warning',
-        message: "Aucun projet actif pour exporter l'historique de chat."
+        message: t('noActiveProjectExport')
       });
       return;
     }
@@ -49,12 +51,12 @@ export const ManagementSection = ({
     if (success) {
       setAlert({
         type: 'success',
-        message: "Historique de chat exporté avec succès !"
+        message: t('chatHistoryExported')
       });
     } else {
       setAlert({
         type: 'danger',
-        message: "Aucun historique de chat trouvé pour ce projet."
+        message: t('noChatHistory')
       });
     }
   };
@@ -88,7 +90,7 @@ export const ManagementSection = ({
           marginBottom: '12px',
           letterSpacing: '-0.025em'
         }}>
-          Gestion de Projet
+          {t('managementTitle')}
         </h1>
         <p style={{
           fontSize: '1.125rem',
@@ -97,7 +99,7 @@ export const ManagementSection = ({
           margin: '0 auto',
           lineHeight: '1.6'
         }}>
-          Gérez vos projets, exportez vos données et configurez votre environnement de travail
+          {t('managementSubtitle')}
         </p>
       </div>
 
@@ -138,38 +140,38 @@ export const ManagementSection = ({
               color: '#1a202c',
               margin: 0
             }}>
-              Gestion des Projets
+              {t('projectManagement')}
             </h2>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <ManagementCard
               icon={<FolderOpen />}
-              title="Importer un projet"
-              subtitle="Chargez un projet existant depuis un fichier JSON"
+              title={t('importProject')}
+              subtitle={t('importProjectDesc')}
               variant="info"
               action={() => {
                 document.getElementById('import-input').click();
               }}
-              actionLabel="Choisir un fichier"
+              actionLabel={t('chooseFile')}
             />
 
             <ManagementCard
               icon={<Save />}
-              title="Exporter le projet (JSON)"
-              subtitle="Sauvegardez votre projet au format JSON"
+              title={t('exportProjectJSON')}
+              subtitle={t('exportProjectJSONDesc')}
               variant="info"
               action={onExport}
-              actionLabel="Télécharger JSON"
+              actionLabel={t('downloadJSON')}
             />
 
             <ManagementCard
               icon={<Archive />}
-              title="Exporter le projet (ZIP)"
-              subtitle="Téléchargez votre projet avec la structure de dossiers"
+              title={t('exportProjectZIP')}
+              subtitle={t('exportProjectZIPDesc')}
               variant="info"
               action={handleExportZip}
-              actionLabel="Télécharger ZIP"
+              actionLabel={t('downloadZIP')}
             />
           </div>
         </div>
@@ -203,30 +205,30 @@ export const ManagementSection = ({
               color: '#1a202c',
               margin: 0
             }}>
-              Historique des Conversations
+              {t('conversationHistory')}
             </h2>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <ManagementCard
               icon={<MessageSquare />}
-              title="Exporter l'historique de chat"
-              subtitle="Sauvegardez vos conversations avec l'IA"
+              title={t('exportChatHistory')}
+              subtitle={t('exportChatHistoryDesc')}
               variant="success"
               action={handleExportChatHistory}
-              actionLabel="Exporter l'historique"
+              actionLabel={t('exportHistory')}
             />
 
             <ManagementCard
               icon={<Trash2 />}
-              title="Effacer l'historique de chat"
+              title={t('clearChatHistory')}
               subtitle={currentProjectId 
-                ? "Supprimer les conversations pour ce projet" 
-                : "Générez d'abord un projet pour activer cette option"
+                ? t('clearChatHistoryDesc') 
+                : t('clearChatHistoryNoProject')
               }
               variant="warning"
               action={currentProjectId && onClearChatHistory ? onClearChatHistory : null}
-              actionLabel={currentProjectId ? "Effacer l'historique" : "Aucun projet actif"}
+              actionLabel={currentProjectId ? t('clearHistory') : t('noActiveProject')}
             />
 
             {currentProjectId && (
@@ -246,10 +248,10 @@ export const ManagementSection = ({
                 }}>
                   <span style={{ fontSize: '16px' }}>💡</span>
                   <div>
-                    <strong>Projet actuel :</strong> {currentProjectId.slice(0, 8)}...
+                    <strong>{t('currentProject')}</strong> {currentProjectId.slice(0, 8)}...
                     <br />
                     <span style={{ fontSize: '13px', color: '#15803d' }}>
-                      L'historique est automatiquement sauvegardé localement.
+                      {t('autoSaved')}
                     </span>
                   </div>
                 </div>
@@ -293,7 +295,7 @@ export const ManagementSection = ({
               color: '#1a202c',
               margin: 0
             }}>
-              Configuration Système
+              {t('systemConfiguration')}
             </h2>
           </div>
 
@@ -304,11 +306,11 @@ export const ManagementSection = ({
             <div style={{ maxWidth: '400px' }}>
               <ManagementCard
                 icon={<RotateCcw />}
-                title="Réinitialiser tout"
-                subtitle="Revenir au projet par défaut et effacer toutes les données"
+                title={t('resetEverything')}
+                subtitle={t('resetEverythingDesc')}
                 variant="danger"
                 action={onReset}
-                actionLabel="Réinitialiser"
+                actionLabel={t('reset')}
               />
             </div>
           </div>
@@ -327,7 +329,7 @@ export const ManagementSection = ({
               margin: 0,
               fontWeight: '500'
             }}>
-              ⚠️ Attention : Cette action est irréversible et supprimera toutes vos données
+              {t('resetWarning')}
             </p>
           </div>
         </div>
