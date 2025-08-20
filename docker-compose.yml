@@ -1,5 +1,24 @@
 version: "3.8"
+
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   backend:
     build:
       context: ./backend
@@ -8,48 +27,54 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      - mlflow_data:/app/mlruns  # Maps to the same location as MLflow
       - ./backend/logs:/app/logs
+      # No need to mount mlruns - backend connects to MLflow service
     env_file:
       - ./backend/.env
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000  # Connect to MLflow service
+      - PYTHONPATH=/app
     networks:
       - app-network
     depends_on:
       mlflow:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
 
+  # Dedicated MLflow service with pre-built image
   mlflow:
-    image: python:3.11-slim
+    image: mlflow-server:latest  # Use pre-built image for speed
+    # Alternative: build first time, then comment out and use image above
+    # build:
+    #   context: ./mlflow
+    #   dockerfile: Dockerfile.mlflow
     ports:
       - "5000:5000"
     volumes:
-      - mlflow_data:/mlflow/mlruns  # Changed to match backend mapping
-      - ./backend/logs:/mlflow/logs
-    working_dir: /mlflow
-    command: >
-      sh -c "
-        apt-get update && apt-get install -y curl &&
-        pip install mlflow==2.8.1 &&
-        mkdir -p /mlflow/mlruns /mlflow/logs &&
-        exec mlflow server --backend-store-uri file:///mlflow/mlruns --default-artifact-root file:///mlflow/mlruns --host 0.0.0.0 --port 5000
-      "
+      - mlflow_data:/mlflow/mlruns  # Persistent MLflow data
+      - mlflow_logs:/mlflow/logs    # Separate MLflow logs
     environment:
       - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
     networks:
       - app-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 20s
       timeout: 10s
-      retries: 15
-      start_period: 120s
+      retries: 10
+      start_period: 15s  # Fast startup with pre-built image
 
 volumes:
   mlflow_data:
+    driver: local
+  mlflow_logs:
     driver: local
 
 networks:
