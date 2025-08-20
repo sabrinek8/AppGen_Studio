@@ -50,6 +50,89 @@ AppGen Studio is a comprehensive full-stack application that revolutionizes Reac
 
 ---
 
+## 🚀 Quick Start
+
+### What You Need
+- **Node.js** 16+ 
+- **Python** 3.11+
+- **Docker** (easiest option)
+- **Your LLM API Key** (Claude, OpenAI, etc.)
+
+---
+
+## 🏃‍♂️ Easy Setup (2 Minutes)
+
+### 1️⃣ Get the Code
+```bash
+git clone <repository-url>
+cd AppGen-Studio
+```
+
+### 2️⃣ Add Your API Key
+```bash
+cd backend
+echo "API_KEY=your_actual_api_key_here" > .env
+echo "BASE_URL=your_llm_base_url" >> .env
+```
+
+### 3️⃣ Run Everything
+```bash
+# Go back to main folder
+cd ..
+
+# Start everything with Docker (easiest!)
+docker-compose up --build
+```
+
+**That's it! 🎉**
+
+Open your browser:
+- **App**: http://localhost:3000
+- **API**: http://localhost:8000/docs
+- **Analytics**: http://localhost:5000
+
+---
+
+## 🛠️ Alternative: Run Without Docker
+
+**If you don't want to use Docker:**
+
+### Backend (Terminal 1)
+
+**With Poetry (recommended):**
+```bash
+cd backend
+# Install Poetry if you don't have it
+curl -sSL https://install.python-poetry.org | python3 -
+poetry install
+poetry run uvicorn app.main:app --reload
+```
+
+**Or with pip:**
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+### Frontend (Terminal 2)
+```bash
+cd frontend
+npm install
+npm start
+```
+
+### Analytics - Optional (Terminal 3)
+```bash
+# With Poetry
+cd backend && poetry run mlflow server --port 5000
+
+# Or with pip
+pip install mlflow && mlflow server --port 5000
+```
+
+---
+
 ## 🏗️ Architecture
 
 ```mermaid
@@ -130,84 +213,6 @@ graph TB
 | **Vertex AI** | Claude Sonnet 3.7 | Primary Generation |
 | **OpenAI** | GPT-4 | Alternative LLM |
 | **Azure** | GitHub Models | Enterprise Option |
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js** 16+ and npm/yarn
-- **Python** 3.11+
-- **Poetry** (for Python dependency management)
-- **Docker** (optional)
-- API keys for your preferred LLM provider
-
-### 1️⃣ Clone & Setup
-```bash
-git clone <repository-url>
-cd Appgen-studio
-```
-
-### 2️⃣ Backend Configuration
-
-#### Using Poetry (Recommended)
-```bash
-cd backend
-
-# Install Poetry if you haven't already
-curl -sSL https://install.python-poetry.org | python3 -
-
-# Install dependencies
-poetry install
-
-# Create .env file
-cat > .env << EOF
-API_KEY=your_llm_api_key
-BASE_URL=your_llm_base_url
-GITHUB_TOKEN=your_github_token (optional)
-MLFLOW_TRACKING_URI=http://localhost:5000
-EOF
-
-# Start backend with Poetry
-poetry run uvicorn app.main:app --reload
-```
-
-#### Alternative: Using pip
-```bash
-cd backend
-pip install -r requirements.txt
-
-# Create .env file (same as above)
-
-# Start backend
-uvicorn app.main:app --reload
-```
-
-### 3️⃣ Frontend Setup
-```bash
-cd frontend
-npm install
-npm start
-```
-
-### 4️⃣ MLflow Dashboard (Optional)
-```bash
-cd backend
-
-# Using Poetry
-poetry run ./setup_mlflow.sh
-
-# Or using standard Python
-./setup_mlflow.sh
-
-# MLflow UI available at http://localhost:5000
-```
-
-### 🎉 Access Your Application
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
-- **MLflow**: http://localhost:5000
 
 ---
 
@@ -307,18 +312,17 @@ GITHUB_TOKEN=github_token_for_models
 MLFLOW_TRACKING_URI=http://localhost:5000
 ```
 
-### Docker Deployment
+### Production Docker Deployment
 
-```dockerfile
-# Backend
-cd backend
-docker build -t appgen-backend .
-docker run -p 8000:8000 --env-file .env appgen-backend
+```bash
+# Production with custom environment
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
-# Frontend
-cd frontend
-npm run build
-npx serve -s build -l 3000
+# Scale services
+docker-compose up --scale backend=3
+
+# View resource usage
+docker stats
 ```
 
 ---
@@ -338,48 +342,25 @@ npx serve -s build -l 3000
 
 ---
 
-## 🐛 Troubleshooting
+## 🐛 Something Not Working?
 
-### Common Issues
+**App won't start?**
+- Check if your API key is correct in `backend/.env`
+- Make sure ports 3000, 8000, 5000 aren't being used by other apps
 
-**🔴 "Failed to generate project"**
+**Docker problems?**
 ```bash
-# Check backend status
-curl http://localhost:8000/health
-
-# Verify API keys
-echo $API_KEY | head -c 20
+docker-compose down
+docker-compose up --build
 ```
 
-**🔴 "Chat not working"**
-```javascript
-// Clear localStorage if corrupted
-localStorage.clear();
-window.location.reload();
-```
+**Without Docker problems?**
+- Press `Ctrl+C` to stop all terminals
+- Try the commands again
 
-**🔴 "PDF upload fails"**
-- Ensure file size < 10MB
-- Check file format (must be valid PDF)
-- Verify backend `/api/pdf/extract-pdf-text` endpoint
-
-**🔴 "MLflow connection issues"**
-```bash
-# Using Poetry
-poetry run mlflow server --host 127.0.0.1 --port 5000
-
-# Using pip
-mlflow server --host 127.0.0.1 --port 5000
-```
-
-**🔴 "Poetry not found"**
-```bash
-# Install Poetry
-curl -sSL https://install.python-poetry.org | python3 -
-
-# Add Poetry to PATH (add to your shell profile)
-export PATH="$HOME/.local/bin:$PATH"
-```
+**Still stuck?** 
+- Check if Node.js and Python are installed correctly
+- Make sure your API key works with your LLM provider
 
 ---
 

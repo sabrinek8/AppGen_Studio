@@ -28,11 +28,10 @@ services:
     volumes:
       - ./backend:/app
       - ./backend/logs:/app/logs
-      # No need to mount mlruns - backend connects to MLflow service
     env_file:
       - ./backend/.env
     environment:
-      - MLFLOW_TRACKING_URI=http://mlflow:5000  # Connect to MLflow service
+      - MLFLOW_TRACKING_URI=http://mlflow:5000  
       - PYTHONPATH=/app
     networks:
       - app-network
@@ -49,16 +48,12 @@ services:
 
   # Dedicated MLflow service with pre-built image
   mlflow:
-    image: mlflow-server:latest  # Use pre-built image for speed
-    # Alternative: build first time, then comment out and use image above
-    # build:
-    #   context: ./mlflow
-    #   dockerfile: Dockerfile.mlflow
+    image: mlflow-server:latest  
     ports:
       - "5000:5000"
     volumes:
-      - mlflow_data:/mlflow/mlruns  # Persistent MLflow data
-      - mlflow_logs:/mlflow/logs    # Separate MLflow logs
+      - mlflow_data:/mlflow/mlruns  
+      - mlflow_logs:/mlflow/logs    
     environment:
       - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
     networks:
