@@ -19,13 +19,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create directories for MLflow
-RUN mkdir -p mlruns logs
-
-# Set MLflow environment variables
-ENV MLFLOW_TRACKING_URI=file:///app/mlruns
-ENV MLFLOW_BACKEND_STORE_URI=file:///app/mlruns
-ENV MLFLOW_DEFAULT_ARTIFACT_ROOT=/app/mlruns
 
 # Set Python path
 ENV PYTHONPATH=/app
@@ -37,10 +30,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
-# Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-RUN chown -R appuser:appuser /app
-USER appuser
 
 # Start FastAPI
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
