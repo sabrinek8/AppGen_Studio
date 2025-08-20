@@ -1,11 +1,14 @@
 import './App.css';
 import ReactCodePreview from './components/ReactCodePreview';
+import { TranslationProvider } from './contexts/TranslationContext';
 
 function App() {
   return (
-    <div className="App">
-      <ReactCodePreview />
-    </div>
+    <TranslationProvider>
+      <div className="App">
+        <ReactCodePreview />
+      </div>
+    </TranslationProvider>
   );
 }
 
