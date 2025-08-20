@@ -1,4 +1,3 @@
-// frontend/src/hooks/useProjectChat.js
 import { useState, useCallback } from 'react';
 import { usePersistentState } from './usePersistentState';
 
