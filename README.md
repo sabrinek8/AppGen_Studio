@@ -29,6 +29,7 @@ AppGen Studio is a comprehensive full-stack application that revolutionizes Reac
 - **📊 Quality Assurance**: Automated evaluation system with MLflow tracking for consistent quality
 - **🎨 Modern UI**: Beautiful Orange Boosted design system with real-time code preview
 - **📁 File Intelligence**: PDF processing and context-aware file uploads for enhanced generation
+- **🌐 Multilanguage Support**: Full internationalization with French, English, and Spanish support
 
 ---
 
@@ -40,6 +41,7 @@ AppGen Studio is a comprehensive full-stack application that revolutionizes Reac
 - **File Management**: Drag-and-drop uploads with PDF text extraction
 - **Project Export**: Multiple formats (JSON, ZIP) with proper file structure
 - **Responsive Design**: Mobile-first Orange Boosted UI with accessibility support
+- **Language Switching**: Dynamic language switching with persistent preferences (FR, EN, ES)
 
 ### 🔧 Backend Power
 - **Multi-Agent System**: Specialized AI agents for generation and modification tasks
