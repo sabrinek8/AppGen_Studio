@@ -334,7 +334,6 @@ docker stats
 ### MLflow Dashboard Features
 - **Experiment Tracking**: All project generations with metadata
 - **Performance Metrics**: Success rates, response times, quality scores
-- **Model Comparison**: Compare different LLM providers
 - **Artifact Storage**: Generated projects and evaluation reports
 
 ### Built-in Analytics
